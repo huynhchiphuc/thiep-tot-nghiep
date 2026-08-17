@@ -369,10 +369,14 @@ function escapeHtml(str) {
 }
 
 function addNewWish(name, msg, attendingStatus = 'Tham dự') {
+  // Sanitize & truncate inputs
+  const cleanName = (name || '').trim().slice(0, 60);
+  const cleanMsg  = (msg || '').trim().slice(0, 300);
+
   const wishes = getStoredWishes();
   const newWish = {
-    name: name || 'Người bạn giấu tên',
-    msg: msg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
+    name: cleanName || 'Người bạn giấu tên',
+    msg: cleanMsg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
     time: 'Vừa xong'
   };
   wishes.unshift(newWish); // add to top
@@ -381,23 +385,28 @@ function addNewWish(name, msg, attendingStatus = 'Tham dự') {
 
   // Async send to Google Sheet WebApp
   sendDataToGoogleSheet({
-    name: name,
+    name: cleanName || 'Người bạn giấu tên',
     attending: attendingStatus,
-    message: msg,
+    message: cleanMsg || 'Gửi lời chúc tốt đẹp!',
     timestamp: new Date().toLocaleString('vi-VN')
   });
 }
 
-// Function to post data to Google Sheet WebApp
+// Function to post data to Google Sheet WebApp safely
 function sendDataToGoogleSheet(data) {
   if (!GOOGLE_SHEET_WEBAPP_URL) return;
   try {
-    // Send as JSON text
+    const payload = {
+      name: String(data.name || '').slice(0, 80),
+      attending: String(data.attending || '').slice(0, 50),
+      message: String(data.message || '').slice(0, 400),
+      timestamp: String(data.timestamp || '')
+    };
     fetch(GOOGLE_SHEET_WEBAPP_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     }).catch(err => console.log('Sheet sync status:', err));
   } catch(e) {}
 }

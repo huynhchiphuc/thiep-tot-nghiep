@@ -326,7 +326,7 @@
       <form class="rsvp-form" id="rsvpForm">
         <div class="form-group">
           <label for="guestName">Tên của bạn:</label>
-          <input type="text" id="guestName" placeholder="Nhập tên của bạn..." required />
+          <input type="text" id="guestName" placeholder="Nhập tên của bạn..." maxlength="60" required autocomplete="off" />
         </div>
         <div class="form-group">
           <label>Bạn sẽ tham dự chứ?</label>
@@ -343,7 +343,7 @@
         </div>
         <div class="form-group">
           <label for="guestMsg">Lời chúc đến Phúc (không bắt buộc):</label>
-          <textarea id="guestMsg" rows="3" placeholder="Gửi lời chúc tốt đẹp..."></textarea>
+          <textarea id="guestMsg" rows="3" placeholder="Gửi lời chúc tốt đẹp..." maxlength="300"></textarea>
         </div>
         <button type="submit" class="submit-rsvp-btn">
           <span>Gửi Xác Nhận</span> ✨
