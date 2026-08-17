@@ -3,204 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thiệp Mời Tốt Nghiệp – Huỳnh Chí Phúc</title>
+  <title>Thiệp Tốt Nghiệp – Huỳnh Chí Phúc</title>
   <meta name="description" content="Trân trọng kính mời bạn tham dự Lễ Tốt Nghiệp của Huỳnh Chí Phúc tại Đại Học Nam Cần Thơ ngày 22/08/2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Particles background -->
-  <div class="particles" id="particles"></div>
+  <!-- Animated BG orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+  </div>
 
-  <!-- Floating petals -->
-  <div class="petals-container" id="petals"></div>
+  <!-- Grid overlay -->
+  <div class="bg-grid" aria-hidden="true"></div>
 
-  <!-- Main wrapper -->
-  <main class="wrapper">
-
-    <!-- Envelope open animation -->
-    <div class="envelope-scene" id="envelopeScene">
-      <div class="envelope" id="envelope">
-        <div class="envelope-flap"></div>
-        <div class="envelope-body">
-          <div class="envelope-seal">
-            <span>🎓</span>
-          </div>
-          <p class="envelope-hint">Nhấn để mở thiệp</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card -->
-    <div class="card hidden" id="card">
-
-      <!-- Header glow border -->
-      <div class="card-glow"></div>
-
-      <!-- Top badge -->
-      <div class="top-badge">
-        <div class="badge-inner">
-          <span class="badge-icon">🎓</span>
-          <span class="badge-text">LỄ TỐT NGHIỆP</span>
-          <span class="badge-icon">🎓</span>
-        </div>
-      </div>
-
-      <!-- Stars decoration -->
-      <div class="stars-row">
-        <span class="star star-1">✦</span>
-        <span class="star star-2">✦</span>
-        <span class="star star-3">✦</span>
-        <span class="star star-4">✦</span>
-        <span class="star star-5">✦</span>
-      </div>
-
-      <!-- Header section -->
-      <header class="card-header">
-        <p class="subtitle-top">Trân trọng kính mời</p>
-        <h1 class="main-title">Huỳnh Chí Phúc</h1>
-        <div class="title-underline">
-          <span class="line"></span>
-          <span class="diamond">◆</span>
-          <span class="line"></span>
-        </div>
-        <p class="university-name">Đại Học Nam Cần Thơ</p>
-      </header>
-
-      <!-- Photo section -->
-      <div class="photo-section">
-        <div class="photo-frame">
-          <div class="photo-ring ring-1"></div>
-          <div class="photo-ring ring-2"></div>
-          <div class="photo-ring ring-3"></div>
-          <img src="1000063510.png" alt="Huỳnh Chí Phúc – Tốt nghiệp" class="grad-photo" />
-          <div class="photo-sparkle sp1">✨</div>
-          <div class="photo-sparkle sp2">⭐</div>
-          <div class="photo-sparkle sp3">✨</div>
-          <div class="photo-sparkle sp4">🌟</div>
-        </div>
-      </div>
-
-      <!-- Invitation text -->
-      <section class="invitation-text">
-        <p class="invite-intro">
-          Sau những năm tháng miệt mài học tập, tôi xin trân trọng kính mời<br/>
-          quý gia đình, bạn bè đến chung vui trong ngày trọng đại của tôi.
-        </p>
-      </section>
-
-      <!-- Info cards -->
-      <section class="info-section">
-
-        <div class="info-card" id="infoDate">
-          <div class="info-icon">📅</div>
-          <div class="info-content">
-            <span class="info-label">Ngày lễ</span>
-            <span class="info-value">22 tháng 08 năm 2026</span>
-          </div>
-        </div>
-
-        <div class="info-card" id="infoTime">
-          <div class="info-icon">⏰</div>
-          <div class="info-content">
-            <span class="info-label">Thời gian</span>
-            <span class="info-value">13:30 – 15:30</span>
-          </div>
-        </div>
-
-        <div class="info-card info-card-full" id="infoLocation">
-          <div class="info-icon">📍</div>
-          <div class="info-content">
-            <span class="info-label">Địa điểm</span>
-            <span class="info-value">Đại Học Nam Cần Thơ</span>
-            <span class="info-sub">Số 168 Đường Nguyễn Văn Cừ (Nối Dài),<br/>An Bình, Ninh Kiều, Cần Thơ</span>
-          </div>
-        </div>
-
-        <div class="info-card" id="infoPhone">
-          <div class="info-icon">📞</div>
-          <div class="info-content">
-            <span class="info-label">Liên hệ</span>
-            <span class="info-value">
-              <a href="tel:0378815231" class="phone-link">0378 815 231</a>
-            </span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- Countdown -->
-      <section class="countdown-section">
-        <p class="countdown-label">⏳ Đếm ngược đến ngày trọng đại</p>
-        <div class="countdown-grid" id="countdown">
-          <div class="countdown-box">
-            <span class="count-num" id="days">00</span>
-            <span class="count-lbl">Ngày</span>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-box">
-            <span class="count-num" id="hours">00</span>
-            <span class="count-lbl">Giờ</span>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-box">
-            <span class="count-num" id="minutes">00</span>
-            <span class="count-lbl">Phút</span>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-box">
-            <span class="count-num" id="seconds">00</span>
-            <span class="count-lbl">Giây</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Map button -->
-      <div class="map-section">
-        <a
-          href="https://maps.google.com/?q=Đại+Học+Nam+Cần+Thơ,+168+Nguyễn+Văn+Cừ+Nối+Dài,+An+Bình,+Ninh+Kiều,+Cần+Thơ"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="map-btn"
-          id="mapBtn"
-        >
-          <span class="map-btn-icon">🗺️</span>
-          Xem bản đồ đường đi
-        </a>
-      </div>
-
-      <!-- Quote -->
-      <section class="quote-section">
-        <div class="quote-box">
-          <span class="quote-mark open">"</span>
-          <p class="quote-text">
-            Hành trình vạn dặm bắt đầu từ một bước chân.<br />
-            Cảm ơn mọi người đã đồng hành cùng tôi trên con đường này.
-          </p>
-          <span class="quote-mark close">"</span>
-          <p class="quote-author">— Huỳnh Chí Phúc</p>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="card-footer">
-        <div class="footer-divider">
-          <span>🌸</span>
-          <span>🎓</span>
-          <span>🌸</span>
-        </div>
-        <p class="footer-text">Sự hiện diện của bạn là niềm vinh dự lớn nhất của tôi</p>
-        <p class="footer-sub">Đại Học Nam Cần Thơ · Lễ Tốt Nghiệp 2026</p>
-      </footer>
-
-    </div><!-- end .card -->
-  </main>
+  <!-- Floating particles -->
+  <div class="float-particles" id="floatParticles" aria-hidden="true"></div>
 
   <!-- Confetti canvas -->
-  <canvas id="confettiCanvas"></canvas>
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- ======= INTRO SCREEN ======= -->
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-content">
+      <div class="intro-ring">
+        <svg viewBox="0 0 200 200" class="ring-svg">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#ringGrad)" stroke-width="2" stroke-dasharray="8 6"/>
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f472b6"/>
+              <stop offset="50%" stop-color="#a855f7"/>
+              <stop offset="100%" stop-color="#fb923c"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="intro-avatar">
+          <img src="1000063510.png" alt="Huỳnh Chí Phúc" />
+        </div>
+      </div>
+      <p class="intro-sub">✦ Bạn nhận được một lời mời đặc biệt ✦</p>
+      <h1 class="intro-name">Huỳnh Chí Phúc</h1>
+      <p class="intro-desc">Trân trọng kính mời bạn đến chung vui<br/>trong ngày tốt nghiệp của mình</p>
+      <button class="intro-btn" id="introBtn">
+        <span class="btn-text">Mở Thiệp Mời</span>
+        <span class="btn-icon">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======= MAIN CARD ======= -->
+  <main class="main-page hidden" id="mainPage">
+
+    <!-- Hero section -->
+    <section class="hero-section">
+      <div class="hero-glass">
+
+        <!-- Top label -->
+        <div class="chip-row">
+          <span class="chip chip-purple">🎓 Lễ Tốt Nghiệp</span>
+          <span class="chip chip-orange">2026</span>
+        </div>
+
+        <!-- Hero title -->
+        <div class="hero-title-block">
+          <p class="hero-greeting">Xin trân trọng kính mời</p>
+          <h2 class="hero-name">Huỳnh<br/><em>Chí Phúc</em></h2>
+          <div class="hero-line">
+            <span></span><span class="hero-cap">🎓</span><span></span>
+          </div>
+          <p class="hero-school">Đại Học Nam Cần Thơ</p>
+        </div>
+
+        <!-- Photo strip -->
+        <div class="photo-strip">
+          <div class="photo-halo">
+            <img src="1000063510.png" alt="Huỳnh Chí Phúc" class="hero-photo" />
+            <div class="halo-ring r1"></div>
+            <div class="halo-ring r2"></div>
+          </div>
+          <div class="photo-badges">
+            <div class="p-badge badge-top">🌟 Tốt nghiệp</div>
+            <div class="p-badge badge-bottom">🏫 NCT 2026</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info section -->
+    <section class="info-section">
+      <h3 class="section-title">Thông Tin Lễ</h3>
+
+      <div class="info-grid">
+
+        <div class="info-tile tile-wide" id="tileDate">
+          <div class="tile-icon-wrap icon-purple">📅</div>
+          <div class="tile-body">
+            <span class="tile-label">Ngày tổ chức</span>
+            <span class="tile-value">22 / 08 / 2026</span>
+            <span class="tile-sub">Thứ Bảy</span>
+          </div>
+        </div>
+
+        <div class="info-tile" id="tileTime">
+          <div class="tile-icon-wrap icon-orange">⏰</div>
+          <div class="tile-body">
+            <span class="tile-label">Thời gian</span>
+            <span class="tile-value">13:30</span>
+            <span class="tile-sub">đến 15:30</span>
+          </div>
+        </div>
+
+        <div class="info-tile tile-wide" id="tileAddr">
+          <div class="tile-icon-wrap icon-pink">📍</div>
+          <div class="tile-body">
+            <span class="tile-label">Địa điểm</span>
+            <span class="tile-value">Đại Học Nam Cần Thơ</span>
+            <span class="tile-sub">168 Đường Nguyễn Văn Cừ (Nối Dài),<br/>An Bình, Ninh Kiều, Cần Thơ</span>
+          </div>
+        </div>
+
+        <div class="info-tile" id="tilePhone">
+          <div class="tile-icon-wrap icon-teal">📞</div>
+          <div class="tile-body">
+            <span class="tile-label">Liên hệ</span>
+            <a href="tel:0378815231" class="tile-value phone-link">0378 815 231</a>
+            <span class="tile-sub">Huỳnh Chí Phúc</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Countdown section -->
+    <section class="cd-section">
+      <div class="cd-glass">
+        <p class="cd-title">⏳ Đếm ngược đến ngày trọng đại</p>
+        <div class="cd-grid">
+          <div class="cd-box">
+            <span class="cd-num" id="days">00</span>
+            <span class="cd-lbl">Ngày</span>
+          </div>
+          <span class="cd-sep">:</span>
+          <div class="cd-box">
+            <span class="cd-num" id="hours">00</span>
+            <span class="cd-lbl">Giờ</span>
+          </div>
+          <span class="cd-sep">:</span>
+          <div class="cd-box">
+            <span class="cd-num" id="minutes">00</span>
+            <span class="cd-lbl">Phút</span>
+          </div>
+          <span class="cd-sep">:</span>
+          <div class="cd-box">
+            <span class="cd-num" id="seconds">00</span>
+            <span class="cd-lbl">Giây</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map button -->
+    <section class="map-section">
+      <a
+        href="https://maps.google.com/?q=Đại+Học+Nam+Cần+Thơ,+168+Nguyễn+Văn+Cừ+Nối+Dài,+An+Bình,+Ninh+Kiều,+Cần+Thơ"
+        target="_blank" rel="noopener noreferrer"
+        class="map-btn" id="mapBtn"
+      >
+        <span>🗺️</span> Xem đường đi trên Google Maps
+      </a>
+    </section>
+
+    <!-- Quote -->
+    <section class="quote-section">
+      <div class="quote-glass">
+        <div class="quote-deco">"</div>
+        <p class="quote-text">
+          Hành trình vạn dặm bắt đầu từ một bước chân.<br/>
+          Cảm ơn mọi người đã đồng hành cùng tôi.
+        </p>
+        <p class="quote-author">— Huỳnh Chí Phúc</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-dots">
+        <span>✦</span><span>🎓</span><span>✦</span>
+      </div>
+      <p>Sự hiện diện của bạn là niềm vinh dự của tôi</p>
+      <p class="footer-sub">Đại Học Nam Cần Thơ · 2026</p>
+    </footer>
+
+  </main>
 
   <script src="script.js"></script>
 </body>

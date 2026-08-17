@@ -1,8 +1,8 @@
-/* ====================================================
-   script.js – Graduation Invitation Interactive Logic
-   ==================================================== */
+/* ============================================================
+   script.js – Vibrant Glassmorphism Invitation Logic
+   ============================================================ */
 
-/* ---------- Confetti ---------- */
+/* ---- Confetti ---- */
 const canvas = document.getElementById('confettiCanvas');
 const ctx    = canvas.getContext('2d');
 
@@ -13,32 +13,44 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-const CONFETTI_COLORS = [
-  '#d4a843','#f0c96a','#e8a0b4','#5ab4c4','#ffffff',
-  '#ffdd57','#ff6eb4','#a78bfa','#34d399'
+const COLORS = [
+  '#a855f7','#d8b4fe','#f472b6','#fda4af',
+  '#fb923c','#fdba74','#2dd4bf','#ffffff',
+  '#7c3aed','#f9a8d4'
 ];
 
-class Confetti {
-  constructor() { this.reset(true); }
-  reset(initial = false) {
-    this.x     = Math.random() * canvas.width;
-    this.y     = initial ? Math.random() * canvas.height : -20;
-    this.w     = Math.random() * 10 + 4;
-    this.h     = Math.random() * 5  + 3;
-    this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
-    this.speed = Math.random() * 3 + 2;
-    this.angle = Math.random() * Math.PI * 2;
-    this.spin  = (Math.random() - 0.5) * 0.12;
-    this.drift = (Math.random() - 0.5) * 1.5;
-    this.opacity = Math.random() * 0.6 + 0.4;
+class ConfettiPiece {
+  constructor(burst = false) { this.burst = burst; this.reset(); }
+  reset() {
+    this.x      = this.burst
+      ? canvas.width / 2 + (Math.random() - 0.5) * 300
+      : Math.random() * canvas.width;
+    this.y      = this.burst ? canvas.height * 0.4 : -20;
+    this.vy     = this.burst ? (Math.random() * -14 - 4) : (Math.random() * 3 + 2);
+    this.vx     = (Math.random() - 0.5) * (this.burst ? 12 : 2);
+    this.gravity= 0.25;
+    this.w      = Math.random() * 10 + 4;
+    this.h      = Math.random() * 5  + 3;
+    this.color  = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.angle  = Math.random() * Math.PI * 2;
+    this.spin   = (Math.random() - 0.5) * 0.14;
+    this.opacity= Math.random() * 0.5 + 0.5;
+    this.life   = 1;
+    this.decay  = this.burst ? (Math.random() * 0.008 + 0.005) : 0;
   }
   update() {
-    this.y     += this.speed;
-    this.x     += this.drift;
+    if (this.burst) {
+      this.vy   += this.gravity;
+      this.life -= this.decay;
+      this.opacity = this.life * 0.8;
+    }
+    this.x     += this.vx;
+    this.y     += this.vy;
     this.angle += this.spin;
-    if (this.y > canvas.height + 20) this.reset();
+    if (!this.burst && this.y > canvas.height + 20) this.reset();
   }
   draw() {
+    if (this.life <= 0) return;
     ctx.save();
     ctx.globalAlpha = this.opacity;
     ctx.translate(this.x, this.y);
@@ -47,152 +59,137 @@ class Confetti {
     ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.restore();
   }
+  isDead() { return this.burst && this.life <= 0; }
 }
 
-let confettiPieces = [];
-let confettiActive = false;
+let confettiList = [];
+let confettiLoop = null;
 
-function startConfetti(duration = 5000) {
-  confettiPieces = Array.from({ length: 120 }, () => new Confetti());
-  confettiActive = true;
-  setTimeout(() => { confettiActive = false; }, duration);
-  animateConfetti();
+function burstConfetti() {
+  const burst = Array.from({ length: 180 }, () => new ConfettiPiece(true));
+  confettiList.push(...burst);
+  if (!confettiLoop) runConfettiLoop();
 }
 
-function animateConfetti() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confettiPieces.forEach(c => { c.update(); c.draw(); });
-  if (confettiActive || confettiPieces.some(c => c.y < canvas.height)) {
-    requestAnimationFrame(animateConfetti);
-  } else {
+function runConfettiLoop() {
+  confettiLoop = requestAnimationFrame(function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
+    confettiList = confettiList.filter(c => !c.isDead());
+    confettiList.forEach(c => { c.update(); c.draw(); });
+    if (confettiList.length > 0) {
+      confettiLoop = requestAnimationFrame(loop);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiLoop = null;
+    }
+  });
 }
 
-/* ---------- Petals ---------- */
-const PETAL_EMOJIS = ['🌸','🌺','⭐','✨','🌟','💛','🏵️'];
-const petalsContainer = document.getElementById('petals');
+/* ---- Floating particles ---- */
+const PARTICLE_COLORS = ['#a855f7','#f472b6','#fb923c','#2dd4bf','#d8b4fe'];
+const particleContainer = document.getElementById('floatParticles');
 
-function spawnPetals(count = 18) {
+function spawnParticles(count = 20) {
   for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'petal';
-    el.textContent = PETAL_EMOJIS[Math.floor(Math.random() * PETAL_EMOJIS.length)];
-    el.style.left     = Math.random() * 100 + 'vw';
-    el.style.fontSize = (Math.random() * 0.9 + 0.5) + 'rem';
-    const dur = Math.random() * 8 + 6;
-    const del = Math.random() * 10;
-    el.style.animationDuration = dur + 's';
-    el.style.animationDelay    = del + 's';
-    petalsContainer.appendChild(el);
+    const p = document.createElement('div');
+    p.className = 'fparticle';
+    const size = Math.random() * 6 + 2;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}vw;
+      bottom:${-size}px;
+      background:${PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)]};
+      animation-duration:${Math.random() * 12 + 8}s;
+      animation-delay:${Math.random() * 8}s;
+    `;
+    particleContainer.appendChild(p);
   }
 }
 
-/* ---------- Countdown ---------- */
-const TARGET_DATE = new Date('2026-08-22T13:30:00+07:00');
+spawnParticles(22);
 
-function updateCountdown() {
-  const now  = new Date();
-  const diff = TARGET_DATE - now;
+/* ---- Countdown ---- */
+const TARGET = new Date('2026-08-22T13:30:00+07:00');
 
-  if (diff <= 0) {
-    document.getElementById('days').textContent    = '00';
-    document.getElementById('hours').textContent   = '00';
-    document.getElementById('minutes').textContent = '00';
-    document.getElementById('seconds').textContent = '00';
-    return;
-  }
+function pad(n) { return String(n).padStart(2, '0'); }
 
-  const days    = Math.floor(diff / 86400000);
-  const hours   = Math.floor((diff % 86400000) / 3600000);
-  const minutes = Math.floor((diff % 3600000)  / 60000);
-  const seconds = Math.floor((diff % 60000)    / 1000);
-
-  const set = (id, val) => {
-    const el = document.getElementById(id);
-    const s  = String(val).padStart(2, '0');
-    if (el.textContent !== s) {
-      el.style.transform = 'translateY(-6px)';
-      el.style.opacity   = '0';
+function tick(id, newVal) {
+  const el = document.getElementById(id);
+  const s  = pad(newVal);
+  if (el && el.textContent !== s) {
+    el.style.transform = 'translateY(-8px)';
+    el.style.opacity   = '0';
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.textContent     = s;
+        el.textContent   = s;
         el.style.transform = 'translateY(0)';
         el.style.opacity   = '1';
       });
-    }
-  };
-
-  set('days',    days);
-  set('hours',   hours);
-  set('minutes', minutes);
-  set('seconds', seconds);
+    });
+  }
 }
 
-/* ---------- Envelope open ---------- */
-function openEnvelope() {
-  const scene    = document.getElementById('envelopeScene');
-  const envelope = document.getElementById('envelope');
-  const card     = document.getElementById('card');
-  const flap     = envelope.querySelector('.envelope-flap');
+function updateCountdown() {
+  const diff = TARGET - new Date();
+  if (diff <= 0) {
+    ['days','hours','minutes','seconds'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '00';
+    });
+    return;
+  }
+  tick('days',    Math.floor(diff / 86400000));
+  tick('hours',   Math.floor((diff % 86400000) / 3600000));
+  tick('minutes', Math.floor((diff % 3600000)  / 60000));
+  tick('seconds', Math.floor((diff % 60000)    / 1000));
+}
 
-  envelope.style.cursor = 'default';
-  envelope.removeEventListener('click', openEnvelope);
+/* ---- Intro → Main transition ---- */
+const introScreen = document.getElementById('introScreen');
+const introBtn    = document.getElementById('introBtn');
+const mainPage    = document.getElementById('mainPage');
 
-  // Lift flap
-  flap.style.transform = 'rotateX(-180deg)';
+function openInvitation() {
+  introBtn.disabled = true;
+  introScreen.style.opacity   = '0';
+  introScreen.style.transform = 'scale(0.92)';
 
   setTimeout(() => {
-    // Fade out envelope
-    scene.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    scene.style.opacity    = '0';
-    scene.style.transform  = 'scale(0.85)';
-  }, 700);
-
-  setTimeout(() => {
-    scene.style.display = 'none';
-    card.classList.remove('hidden');
-    // Trigger confetti and petals
-    startConfetti(6000);
-    spawnPetals(24);
-    // Start countdown
+    introScreen.style.display = 'none';
+    mainPage.classList.remove('hidden');
+    burstConfetti();
     updateCountdown();
     setInterval(updateCountdown, 1000);
-    // Reveal animations
     initReveal();
-  }, 1350);
+  }, 700);
 }
 
-document.getElementById('envelope').addEventListener('click', openEnvelope);
+introBtn.addEventListener('click', openInvitation);
 
-/* ---------- Intersection Observer reveal ---------- */
+/* ---- Reveal on scroll ---- */
 function initReveal() {
-  const els = document.querySelectorAll(
-    '.info-card, .countdown-section, .quote-box, .map-btn'
+  const targets = document.querySelectorAll(
+    '.hero-section, .info-section, .cd-section, .map-section, .quote-section, .site-footer'
   );
-  els.forEach((el, i) => {
+  targets.forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = (i * 80) + 'ms';
+    el.style.transitionDelay = (i * 100) + 'ms';
   });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
 
-  els.forEach(el => observer.observe(el));
+  targets.forEach(el => obs.observe(el));
 }
 
-/* ---------- Touch / mobile: count-down digits transition ---------- */
-document.querySelectorAll('.count-num').forEach(el => {
-  el.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+/* ---- Smooth style for countdown numbers ---- */
+['days','hours','minutes','seconds'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.style.transition = 'transform 0.25s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease';
 });
-
-/* ---------- Lazy fallback: if user doesn't click envelope after 12s ---------- */
-// (removed to keep it interactive-only)
