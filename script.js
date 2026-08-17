@@ -323,18 +323,103 @@ function showToast(message) {
 }
 
 /* ============================================================
-   9. HEART WISH WALL / HEART EXPLOSION
+   9. GOOGLE SHEETS & LIVE PUBLIC WISH WALL FEED
+   ============================================================ */
+
+// Google Sheet WebApp URL (Dán URL Google Apps Script vào đây khi sẵn sàng)
+const GOOGLE_SHEET_WEBAPP_URL = window.GOOGLE_SHEET_WEBAPP_URL || '';
+
+// Default sample wishes for public wall
+const DEFAULT_WISHES = [
+  { name: 'Hội Bạn Thân 🎓', msg: 'Chúc Tân cử nhân Huỳnh Chí Phúc luôn gặt hái được nhiều thành công rực rỡ!', time: 'Vừa xong' },
+  { name: 'Anh Chị Đồng Nghiệp ✨', msg: 'Chúc mừng Phúc đã hoàn thành xuất sắc chặng đường Đại Học Nam Cần Thơ nhé!', time: '10 phút trước' },
+  { name: 'Bạn Cùng Lớp DNC 🌟', msg: 'Chúc Phúc luôn giữ ngọn lửa đam mê và tự tin chạm tới mọi mục tiêu!', time: '1 giờ trước' }
+];
+
+// Load stored wishes or use default
+function getStoredWishes() {
+  const localData = localStorage.getItem('hcp_wishes_feed');
+  if (localData) {
+    try { return JSON.parse(localData); } catch(e) {}
+  }
+  return DEFAULT_WISHES;
+}
+
+function renderWishFeed() {
+  const feedList = document.getElementById('wishFeedList');
+  const feedCount = document.getElementById('wishFeedCount');
+  if (!feedList) return;
+
+  const wishes = getStoredWishes();
+  if (feedCount) feedCount.textContent = wishes.length;
+
+  feedList.innerHTML = wishes.map(w => `
+    <div class="feed-card">
+      <div class="feed-card-header">
+        <span class="feed-author">✨ ${escapeHtml(w.name)}</span>
+        <span class="feed-time">${escapeHtml(w.time || 'Vừa xong')}</span>
+      </div>
+      <div class="feed-body">${escapeHtml(w.msg)}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function addNewWish(name, msg, attendingStatus = 'Tham dự') {
+  const wishes = getStoredWishes();
+  const newWish = {
+    name: name || 'Người bạn giấu tên',
+    msg: msg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
+    time: 'Vừa xong'
+  };
+  wishes.unshift(newWish); // add to top
+  localStorage.setItem('hcp_wishes_feed', JSON.stringify(wishes));
+  renderWishFeed();
+
+  // Async send to Google Sheet WebApp if configured
+  sendDataToGoogleSheet({
+    name: name,
+    attending: attendingStatus,
+    message: msg,
+    timestamp: new Date().toLocaleString('vi-VN')
+  });
+}
+
+// Function to post data to Google Sheet WebApp
+function sendDataToGoogleSheet(data) {
+  if (!GOOGLE_SHEET_WEBAPP_URL) return;
+  try {
+    fetch(GOOGLE_SHEET_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(err => console.log('Sheet sync status:', err));
+  } catch(e) {}
+}
+
+// Render feed on page init
+document.addEventListener('DOMContentLoaded', renderWishFeed);
+renderWishFeed();
+
+/* ============================================================
+   10. HEART WISH WALL / HEART EXPLOSION
    ============================================================ */
 
 const sendHeartBtn = document.getElementById('sendHeartBtn');
 const heartCountEl = document.getElementById('heartCount');
-let currentHearts = 128;
+let currentHearts  = parseInt(localStorage.getItem('hcp_hearts_count') || '128', 10);
+if (heartCountEl) heartCountEl.textContent = currentHearts;
 
 const HEART_TYPES = ['❤️','💖','💕','✨','🌸','🌟','🎉'];
 
 sendHeartBtn.addEventListener('click', (e) => {
   currentHearts++;
   heartCountEl.textContent = currentHearts;
+  localStorage.setItem('hcp_hearts_count', currentHearts.toString());
 
   // Spawn floating hearts
   const rect = sendHeartBtn.getBoundingClientRect();
@@ -350,11 +435,11 @@ sendHeartBtn.addEventListener('click', (e) => {
     }, i * 90);
   }
 
-  showToast('💖 Cảm ơn bạn đã gửi lời chúc tốt đẹp!');
+  showToast('💖 Cảm ơn bạn đã gửi thả tim và lời chúc!');
 });
 
 /* ============================================================
-   10. RSVP MODAL & QUICK ACTIONS
+   11. RSVP MODAL & QUICK ACTIONS
    ============================================================ */
 
 const rsvpModal      = document.getElementById('rsvpModal');
@@ -381,9 +466,16 @@ rsvpModal.addEventListener('click', (e) => {
 rsvpForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const name = document.getElementById('guestName').value.trim();
+  const msg  = document.getElementById('guestMsg').value.trim();
+  const attendingRadio = document.querySelector('input[name="attending"]:checked');
+  const attendingVal = attendingRadio ? (attendingRadio.value === 'yes' ? 'Chắc chắn đến 🎉' : 'Sẽ cố gắng xếp lịch ✨') : 'Tham dự';
+
+  // Add wish to public wall feed & sync to Google Sheet
+  addNewWish(name, msg || 'Gửi lời chúc tốt đẹp nhất đến Phúc ngày tốt nghiệp! 🎓✨', attendingVal);
+
   closeModal();
   burstConfetti(150);
-  showToast(`🎉 Cảm ơn <strong>${name}</strong> đã xác nhận tham dự!`);
+  showToast(`🎉 Cảm ơn <strong>${escapeHtml(name)}</strong> đã xác nhận tham dự & gửi lời chúc!`);
   rsvpForm.reset();
 });
 

@@ -719,6 +719,65 @@ body {
   font-size: 0.82rem;
 }
 
+/* WISH FEED LIST */
+.wish-feed-container {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed rgba(255,255,255,0.15);
+  text-align: left;
+}
+
+.feed-subtitle {
+  font-size: 0.82rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #f472b6; margin-bottom: 14px;
+}
+
+.wish-feed-list {
+  display: flex; flex-direction: column; gap: 10px;
+  max-height: 320px; overflow-y: auto;
+  padding-right: 4px;
+}
+.wish-feed-list::-webkit-scrollbar { width: 4px; }
+.wish-feed-list::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 99px; }
+
+.feed-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  transition: all 0.3s ease;
+  animation: feedCardIn 0.4s ease-out forwards;
+}
+@keyframes feedCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feed-card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(244,114,182,0.35);
+}
+
+.feed-card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 4px;
+}
+
+.feed-author {
+  font-size: 0.88rem; font-weight: 700; color: #fef08a;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.feed-time {
+  font-size: 0.7rem; color: rgba(255,255,255,0.45);
+}
+
+.feed-body {
+  font-size: 0.82rem; color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+}
+
 /* Floating heart animation element */
 .floating-heart-anim {
   position: fixed;
