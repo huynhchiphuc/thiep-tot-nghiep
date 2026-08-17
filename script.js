@@ -2,7 +2,51 @@
    script.js – Vibrant Glassmorphism Invitation Logic
    ============================================================ */
 
-/* ---- Confetti ---- */
+/* ============================================================
+   1. MP3 PLAYER – khai báo sớm nhất để dùng ở mọi nơi
+   ============================================================ */
+
+const bgAudio  = new Audio('nhac_nen.mp3');
+bgAudio.loop   = true;
+bgAudio.volume = 0;          // bắt đầu từ 0, sẽ fade in
+
+let isPlaying = false;
+
+function fadeIn(targetVol = 0.55, duration = 1200) {
+  bgAudio.volume = 0;
+  bgAudio.play().catch(() => {});
+  const step  = 30;
+  const ticks = duration / step;
+  const delta = targetVol / ticks;
+  const timer = setInterval(() => {
+    if (bgAudio.volume + delta >= targetVol) {
+      bgAudio.volume = targetVol;
+      clearInterval(timer);
+    } else {
+      bgAudio.volume += delta;
+    }
+  }, step);
+}
+
+function fadeOut(duration = 800) {
+  const step  = 30;
+  const ticks = duration / step;
+  const delta = (bgAudio.volume || 0.55) / ticks;
+  const timer = setInterval(() => {
+    if (bgAudio.volume - delta <= 0) {
+      bgAudio.volume = 0;
+      bgAudio.pause();
+      clearInterval(timer);
+    } else {
+      bgAudio.volume -= delta;
+    }
+  }, step);
+}
+
+/* ============================================================
+   2. CONFETTI
+   ============================================================ */
+
 const canvas = document.getElementById('confettiCanvas');
 const ctx    = canvas.getContext('2d');
 
@@ -22,21 +66,21 @@ const COLORS = [
 class ConfettiPiece {
   constructor(burst = false) { this.burst = burst; this.reset(); }
   reset() {
-    this.x      = this.burst
+    this.x       = this.burst
       ? canvas.width / 2 + (Math.random() - 0.5) * 300
       : Math.random() * canvas.width;
-    this.y      = this.burst ? canvas.height * 0.4 : -20;
-    this.vy     = this.burst ? (Math.random() * -14 - 4) : (Math.random() * 3 + 2);
-    this.vx     = (Math.random() - 0.5) * (this.burst ? 12 : 2);
-    this.gravity= 0.25;
-    this.w      = Math.random() * 10 + 4;
-    this.h      = Math.random() * 5  + 3;
-    this.color  = COLORS[Math.floor(Math.random() * COLORS.length)];
-    this.angle  = Math.random() * Math.PI * 2;
-    this.spin   = (Math.random() - 0.5) * 0.14;
-    this.opacity= Math.random() * 0.5 + 0.5;
-    this.life   = 1;
-    this.decay  = this.burst ? (Math.random() * 0.008 + 0.005) : 0;
+    this.y       = this.burst ? canvas.height * 0.4 : -20;
+    this.vy      = this.burst ? (Math.random() * -14 - 4) : (Math.random() * 3 + 2);
+    this.vx      = (Math.random() - 0.5) * (this.burst ? 12 : 2);
+    this.gravity = 0.25;
+    this.w       = Math.random() * 10 + 4;
+    this.h       = Math.random() * 5  + 3;
+    this.color   = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.angle   = Math.random() * Math.PI * 2;
+    this.spin    = (Math.random() - 0.5) * 0.14;
+    this.opacity = Math.random() * 0.5 + 0.5;
+    this.life    = 1;
+    this.decay   = this.burst ? (Math.random() * 0.008 + 0.005) : 0;
   }
   update() {
     if (this.burst) {
@@ -85,7 +129,10 @@ function runConfettiLoop() {
   });
 }
 
-/* ---- Floating particles ---- */
+/* ============================================================
+   3. FLOATING PARTICLES
+   ============================================================ */
+
 const PARTICLE_COLORS = ['#a855f7','#f472b6','#fb923c','#2dd4bf','#d8b4fe'];
 const particleContainer = document.getElementById('floatParticles');
 
@@ -108,7 +155,10 @@ function spawnParticles(count = 20) {
 
 spawnParticles(22);
 
-/* ---- Countdown ---- */
+/* ============================================================
+   4. COUNTDOWN
+   ============================================================ */
+
 const TARGET = new Date('2026-08-22T13:30:00+07:00');
 
 function pad(n) { return String(n).padStart(2, '0'); }
@@ -121,7 +171,7 @@ function tick(id, newVal) {
     el.style.opacity   = '0';
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.textContent   = s;
+        el.textContent     = s;
         el.style.transform = 'translateY(0)';
         el.style.opacity   = '1';
       });
@@ -144,13 +194,105 @@ function updateCountdown() {
   tick('seconds', Math.floor((diff % 60000)    / 1000));
 }
 
-/* ---- Intro → Main transition ---- */
+['days','hours','minutes','seconds'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.style.transition = 'transform 0.25s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease';
+});
+
+/* ============================================================
+   5. MUSIC BUTTON (nút 🎵 góc dưới phải)
+   ============================================================ */
+
+const musicBtn  = document.getElementById('musicBtn');
+const musicIcon = document.getElementById('musicIcon');
+
+const NOTE_EMOJIS = ['🎵','🎶','♪','♫','🎼'];
+
+function spawnNoteParticle() {
+  if (!musicBtn) return;
+  const rect = musicBtn.getBoundingClientRect();
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      const el = document.createElement('span');
+      el.className   = 'note-particle';
+      el.textContent = NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
+      el.style.left  = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top   = (rect.top - 10) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2100);
+    }, i * 120);
+  }
+}
+
+function setMusicPlaying(playing) {
+  isPlaying = playing;
+  if (playing) {
+    musicIcon.textContent = '🔊';
+    musicBtn.classList.add('playing');
+  } else {
+    musicIcon.textContent = '🎵';
+    musicBtn.classList.remove('playing');
+  }
+}
+
+musicBtn.addEventListener('click', () => {
+  if (isPlaying) {
+    fadeOut();
+    setMusicPlaying(false);
+  } else {
+    fadeIn();
+    setMusicPlaying(true);
+    spawnNoteParticle();
+  }
+});
+
+/* ============================================================
+   6. AUTO-PLAY: bật nhạc ngay khi người dùng tương tác đầu tiên
+   ============================================================ */
+
+function startMusicOnFirstInteraction() {
+  if (isPlaying) return;
+  setMusicPlaying(true);
+  fadeIn();
+  spawnNoteParticle();
+}
+
+// Thử autoplay ngay (một số browser cho phép nếu không có âm thanh mute)
+bgAudio.play()
+  .then(() => {
+    // Thành công – browser cho phép autoplay
+    setMusicPlaying(true);
+    bgAudio.volume = 0;
+    fadeIn();                   // fade in mượt
+  })
+  .catch(() => {
+    // Browser chặn autoplay → đợi click/touch đầu tiên bất kỳ đâu
+    const handler = () => {
+      startMusicOnFirstInteraction();
+      document.removeEventListener('click',      handler);
+      document.removeEventListener('touchstart', handler);
+    };
+    document.addEventListener('click',      handler, { once: true });
+    document.addEventListener('touchstart', handler, { once: true });
+  });
+
+/* ============================================================
+   7. INTRO → MAIN TRANSITION
+   ============================================================ */
+
 const introScreen = document.getElementById('introScreen');
 const introBtn    = document.getElementById('introBtn');
 const mainPage    = document.getElementById('mainPage');
 
 function openInvitation() {
   introBtn.disabled = true;
+
+  // Đảm bảo nhạc đang phát khi mở thiệp
+  if (!isPlaying) {
+    setMusicPlaying(true);
+    fadeIn();
+  }
+
   introScreen.style.opacity   = '0';
   introScreen.style.transform = 'scale(0.92)';
 
@@ -161,14 +303,15 @@ function openInvitation() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
     initReveal();
-    // Auto-play nhạc sau khi mở thiệp (user đã gesture rồi)
-    setTimeout(() => { if (window.__autoPlayMusic) window.__autoPlayMusic(); }, 600);
   }, 700);
 }
 
 introBtn.addEventListener('click', openInvitation);
 
-/* ---- Reveal on scroll ---- */
+/* ============================================================
+   8. REVEAL ON SCROLL
+   ============================================================ */
+
 function initReveal() {
   const targets = document.querySelectorAll(
     '.hero-section, .info-section, .cd-section, .map-section, .quote-section, .site-footer'
@@ -189,101 +332,3 @@ function initReveal() {
 
   targets.forEach(el => obs.observe(el));
 }
-
-/* ---- Smooth style for countdown numbers ---- */
-['days','hours','minutes','seconds'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.style.transition = 'transform 0.25s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease';
-});
-
-/* ============================================================
-   MP3 MUSIC PLAYER – nhac_nen.mp3
-   ============================================================ */
-
-const bgAudio = new Audio('nhac_nen.mp3');
-bgAudio.loop   = true;
-bgAudio.volume = 0.55;
-
-let isPlaying = false;
-
-// Fade in / fade out helpers
-function fadeIn(audio, targetVol = 0.55, duration = 1200) {
-  audio.volume = 0;
-  audio.play().catch(() => {});
-  const step  = 30;
-  const ticks = duration / step;
-  const delta = targetVol / ticks;
-  const timer = setInterval(() => {
-    if (audio.volume + delta >= targetVol) {
-      audio.volume = targetVol;
-      clearInterval(timer);
-    } else {
-      audio.volume += delta;
-    }
-  }, step);
-}
-
-function fadeOut(audio, duration = 800) {
-  const step  = 30;
-  const ticks = duration / step;
-  const delta = audio.volume / ticks;
-  const timer = setInterval(() => {
-    if (audio.volume - delta <= 0) {
-      audio.volume = 0;
-      audio.pause();
-      clearInterval(timer);
-    } else {
-      audio.volume -= delta;
-    }
-  }, step);
-}
-
-// Floating note particles
-const NOTE_EMOJIS = ['🎵','🎶','♪','♫','🎼'];
-function spawnNoteParticle() {
-  const btn = document.getElementById('musicBtn');
-  if (!btn) return;
-  const rect = btn.getBoundingClientRect();
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => {
-      const el = document.createElement('span');
-      el.className   = 'note-particle';
-      el.textContent = NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
-      el.style.left  = (rect.left + Math.random() * rect.width) + 'px';
-      el.style.top   = (rect.top - 10) + 'px';
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 2100);
-    }, i * 120);
-  }
-}
-
-// Music button
-const musicBtn  = document.getElementById('musicBtn');
-const musicIcon = document.getElementById('musicIcon');
-
-musicBtn.addEventListener('click', () => {
-  if (isPlaying) {
-    isPlaying = false;
-    fadeOut(bgAudio);
-    musicIcon.textContent = '🎵';
-    musicBtn.classList.remove('playing');
-  } else {
-    isPlaying = true;
-    fadeIn(bgAudio);
-    musicIcon.textContent = '🔊';
-    musicBtn.classList.add('playing');
-    spawnNoteParticle();
-  }
-});
-
-// Auto-play khi mở thiệp (gesture đã có từ nút intro)
-window.__autoPlayMusic = function() {
-  if (!isPlaying) {
-    isPlaying = true;
-    fadeIn(bgAudio);
-    musicIcon.textContent = '🔊';
-    musicBtn.classList.add('playing');
-    spawnNoteParticle();
-  }
-};
-
