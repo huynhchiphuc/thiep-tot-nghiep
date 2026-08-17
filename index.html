@@ -350,8 +350,21 @@
           <label for="guestMsg">Lời chúc đến Phúc (không bắt buộc):</label>
           <textarea id="guestMsg" rows="3" placeholder="Gửi lời chúc tốt đẹp..." maxlength="300"></textarea>
         </div>
+        <div class="form-group">
+          <label>Chế độ hiển thị lời chúc:</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="visibility" value="public" checked />
+              <span>🌐 Công khai (Hiện lên web)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="visibility" value="private" />
+              <span>🔒 Riêng tư (Chỉ gửi riêng cho Phúc)</span>
+            </label>
+          </div>
+        </div>
         <button type="submit" class="submit-rsvp-btn">
-          <span>Gửi Xác Nhận</span> ✨
+          <span>Gửi Xác Nhận & Lời Chúc</span> ✨
         </button>
       </form>
     </div>

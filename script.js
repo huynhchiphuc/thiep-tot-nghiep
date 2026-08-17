@@ -368,26 +368,29 @@ function escapeHtml(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function addNewWish(name, msg, attendingStatus = 'Tham dự') {
+function addNewWish(name, msg, attendingStatus = 'Tham dự', isPublic = true) {
   // Sanitize & truncate inputs
   const cleanName = (name || '').trim().slice(0, 60);
   const cleanMsg  = (msg || '').trim().slice(0, 300);
 
-  const wishes = getStoredWishes();
-  const newWish = {
-    name: cleanName || 'Người bạn giấu tên',
-    msg: cleanMsg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
-    time: 'Vừa xong'
-  };
-  wishes.unshift(newWish); // add to top
-  localStorage.setItem('hcp_wishes_feed', JSON.stringify(wishes));
-  renderWishFeed();
+  // If public, append to public Wish Feed on website
+  if (isPublic) {
+    const wishes = getStoredWishes();
+    const newWish = {
+      name: cleanName || 'Người bạn giấu tên',
+      msg: cleanMsg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
+      time: 'Vừa xong'
+    };
+    wishes.unshift(newWish); // add to top
+    localStorage.setItem('hcp_wishes_feed', JSON.stringify(wishes));
+    renderWishFeed();
+  }
 
-  // Async send to Google Sheet WebApp
+  // Always send data to Google Sheet (marked if Private)
   sendDataToGoogleSheet({
     name: cleanName || 'Người bạn giấu tên',
     attending: attendingStatus,
-    message: cleanMsg || 'Gửi lời chúc tốt đẹp!',
+    message: isPublic ? (cleanMsg || 'Gửi lời chúc tốt đẹp!') : `🔒 [RIÊNG TƯ] ${cleanMsg || 'Gửi lời chúc tốt đẹp!'}`,
     timestamp: new Date().toLocaleString('vi-VN')
   });
 }
@@ -445,7 +448,15 @@ sendHeartBtn.addEventListener('click', (e) => {
     }, i * 90);
   }
 
-  showToast('💖 Cảm ơn bạn đã gửi thả tim và lời chúc!');
+  showToast('💖 Cảm ơn bạn đã gửi thả tim!');
+
+  // Sync heart click to Google Sheet
+  sendDataToGoogleSheet({
+    name: 'Bạn bè thả tim ❤️',
+    attending: 'Thả tim',
+    message: `Đã thả tim chúc mừng! (Tổng số tim: ${currentHearts})`,
+    timestamp: new Date().toLocaleString('vi-VN')
+  });
 });
 
 /* ============================================================
@@ -480,12 +491,21 @@ rsvpForm.addEventListener('submit', (e) => {
   const attendingRadio = document.querySelector('input[name="attending"]:checked');
   const attendingVal = attendingRadio ? (attendingRadio.value === 'yes' ? 'Chắc chắn đến 🎉' : 'Sẽ cố gắng xếp lịch ✨') : 'Tham dự';
 
-  // Add wish to public wall feed & sync to Google Sheet
-  addNewWish(name, msg || 'Gửi lời chúc tốt đẹp nhất đến Phúc ngày tốt nghiệp! 🎓✨', attendingVal);
+  const visibilityRadio = document.querySelector('input[name="visibility"]:checked');
+  const isPublic = visibilityRadio ? (visibilityRadio.value === 'public') : true;
+
+  // Add wish & sync to Google Sheet
+  addNewWish(name, msg || 'Gửi lời chúc tốt đẹp nhất đến Phúc ngày tốt nghiệp! 🎓✨', attendingVal, isPublic);
 
   closeModal();
   burstConfetti(150);
-  showToast(`🎉 Cảm ơn <strong>${escapeHtml(name)}</strong> đã xác nhận tham dự & gửi lời chúc!`);
+  
+  if (isPublic) {
+    showToast(`🎉 Cảm ơn <strong>${escapeHtml(name)}</strong> đã xác nhận & gửi lời chúc công khai!`);
+  } else {
+    showToast(`🔒 Cảm ơn <strong>${escapeHtml(name)}</strong>! Lời chúc riêng tư đã được gửi đến Phúc.`);
+  }
+
   rsvpForm.reset();
 });
 
