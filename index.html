@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thiệp Mời Tốt Nghiệp – Huỳnh Chí Phúc</title>
+  <meta name="description" content="Trân trọng kính mời bạn tham dự Lễ Tốt Nghiệp của Huỳnh Chí Phúc tại Đại Học Nam Cần Thơ ngày 22/08/2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Particles background -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Floating petals -->
+  <div class="petals-container" id="petals"></div>
+
+  <!-- Main wrapper -->
+  <main class="wrapper">
+
+    <!-- Envelope open animation -->
+    <div class="envelope-scene" id="envelopeScene">
+      <div class="envelope" id="envelope">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body">
+          <div class="envelope-seal">
+            <span>🎓</span>
+          </div>
+          <p class="envelope-hint">Nhấn để mở thiệp</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card hidden" id="card">
+
+      <!-- Header glow border -->
+      <div class="card-glow"></div>
+
+      <!-- Top badge -->
+      <div class="top-badge">
+        <div class="badge-inner">
+          <span class="badge-icon">🎓</span>
+          <span class="badge-text">LỄ TỐT NGHIỆP</span>
+          <span class="badge-icon">🎓</span>
+        </div>
+      </div>
+
+      <!-- Stars decoration -->
+      <div class="stars-row">
+        <span class="star star-1">✦</span>
+        <span class="star star-2">✦</span>
+        <span class="star star-3">✦</span>
+        <span class="star star-4">✦</span>
+        <span class="star star-5">✦</span>
+      </div>
+
+      <!-- Header section -->
+      <header class="card-header">
+        <p class="subtitle-top">Trân trọng kính mời</p>
+        <h1 class="main-title">Huỳnh Chí Phúc</h1>
+        <div class="title-underline">
+          <span class="line"></span>
+          <span class="diamond">◆</span>
+          <span class="line"></span>
+        </div>
+        <p class="university-name">Đại Học Nam Cần Thơ</p>
+      </header>
+
+      <!-- Photo section -->
+      <div class="photo-section">
+        <div class="photo-frame">
+          <div class="photo-ring ring-1"></div>
+          <div class="photo-ring ring-2"></div>
+          <div class="photo-ring ring-3"></div>
+          <img src="1000063510.png" alt="Huỳnh Chí Phúc – Tốt nghiệp" class="grad-photo" />
+          <div class="photo-sparkle sp1">✨</div>
+          <div class="photo-sparkle sp2">⭐</div>
+          <div class="photo-sparkle sp3">✨</div>
+          <div class="photo-sparkle sp4">🌟</div>
+        </div>
+      </div>
+
+      <!-- Invitation text -->
+      <section class="invitation-text">
+        <p class="invite-intro">
+          Sau những năm tháng miệt mài học tập, tôi xin trân trọng kính mời<br/>
+          quý gia đình, bạn bè đến chung vui trong ngày trọng đại của tôi.
+        </p>
+      </section>
+
+      <!-- Info cards -->
+      <section class="info-section">
+
+        <div class="info-card" id="infoDate">
+          <div class="info-icon">📅</div>
+          <div class="info-content">
+            <span class="info-label">Ngày lễ</span>
+            <span class="info-value">22 tháng 08 năm 2026</span>
+          </div>
+        </div>
+
+        <div class="info-card" id="infoTime">
+          <div class="info-icon">⏰</div>
+          <div class="info-content">
+            <span class="info-label">Thời gian</span>
+            <span class="info-value">13:30 – 15:30</span>
+          </div>
+        </div>
+
+        <div class="info-card info-card-full" id="infoLocation">
+          <div class="info-icon">📍</div>
+          <div class="info-content">
+            <span class="info-label">Địa điểm</span>
+            <span class="info-value">Đại Học Nam Cần Thơ</span>
+            <span class="info-sub">Số 168 Đường Nguyễn Văn Cừ (Nối Dài),<br/>An Bình, Ninh Kiều, Cần Thơ</span>
+          </div>
+        </div>
+
+        <div class="info-card" id="infoPhone">
+          <div class="info-icon">📞</div>
+          <div class="info-content">
+            <span class="info-label">Liên hệ</span>
+            <span class="info-value">
+              <a href="tel:0378815231" class="phone-link">0378 815 231</a>
+            </span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Countdown -->
+      <section class="countdown-section">
+        <p class="countdown-label">⏳ Đếm ngược đến ngày trọng đại</p>
+        <div class="countdown-grid" id="countdown">
+          <div class="countdown-box">
+            <span class="count-num" id="days">00</span>
+            <span class="count-lbl">Ngày</span>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-box">
+            <span class="count-num" id="hours">00</span>
+            <span class="count-lbl">Giờ</span>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-box">
+            <span class="count-num" id="minutes">00</span>
+            <span class="count-lbl">Phút</span>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-box">
+            <span class="count-num" id="seconds">00</span>
+            <span class="count-lbl">Giây</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map button -->
+      <div class="map-section">
+        <a
+          href="https://maps.google.com/?q=Đại+Học+Nam+Cần+Thơ,+168+Nguyễn+Văn+Cừ+Nối+Dài,+An+Bình,+Ninh+Kiều,+Cần+Thơ"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="map-btn"
+          id="mapBtn"
+        >
+          <span class="map-btn-icon">🗺️</span>
+          Xem bản đồ đường đi
+        </a>
+      </div>
+
+      <!-- Quote -->
+      <section class="quote-section">
+        <div class="quote-box">
+          <span class="quote-mark open">"</span>
+          <p class="quote-text">
+            Hành trình vạn dặm bắt đầu từ một bước chân.<br />
+            Cảm ơn mọi người đã đồng hành cùng tôi trên con đường này.
+          </p>
+          <span class="quote-mark close">"</span>
+          <p class="quote-author">— Huỳnh Chí Phúc</p>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="card-footer">
+        <div class="footer-divider">
+          <span>🌸</span>
+          <span>🎓</span>
+          <span>🌸</span>
+        </div>
+        <p class="footer-text">Sự hiện diện của bạn là niềm vinh dự lớn nhất của tôi</p>
+        <p class="footer-sub">Đại Học Nam Cần Thơ · Lễ Tốt Nghiệp 2026</p>
+      </footer>
+
+    </div><!-- end .card -->
+  </main>
+
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
