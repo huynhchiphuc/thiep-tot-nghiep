@@ -331,7 +331,7 @@ const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyY72ka
 
 // Default sample wishes for public wall
 const DEFAULT_WISHES = [
-  { name: 'Hội Bạn Thân 🎓', msg: 'Chúc Tân cử nhân Huỳnh Chí Phúc luôn gặt hái được nhiều thành công rực rỡ!', time: 'Vừa xong' },
+  { name: 'Hội Bạn Thân 🎓', msg: 'Chúc Tân kỹ sư nhân Huỳnh Chí Phúc luôn gặt hái được nhiều thành công rực rỡ!', time: 'Vừa xong' },
   { name: 'Anh Chị Đồng Nghiệp ✨', msg: 'Chúc mừng Phúc đã hoàn thành xuất sắc chặng đường Đại Học Nam Cần Thơ nhé!', time: '10 phút trước' },
   { name: 'Bạn Cùng Lớp DNC 🌟', msg: 'Chúc Phúc luôn giữ ngọn lửa đam mê và tự tin chạm tới mọi mục tiêu!', time: '1 giờ trước' }
 ];
