@@ -197,127 +197,51 @@ function initReveal() {
 });
 
 /* ============================================================
-   WEB AUDIO MUSIC ENGINE
-   Tạo nhạc chúc mừng tốt nghiệp tự động, không cần file âm thanh
+   MP3 MUSIC PLAYER – nhac_nen.mp3
    ============================================================ */
 
-let audioCtx   = null;
-let musicNodes = [];
-let isPlaying  = false;
-let musicScheduleTimeout = null;
+const bgAudio = new Audio('nhac_nen.mp3');
+bgAudio.loop   = true;
+bgAudio.volume = 0.55;
 
-// Giai điệu: "Pomp and Circumstance" đơn giản hóa + thêm harmony
-// Frequencies (Hz) – A4=440
-const NOTE = {
-  C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00,
-  A4:440.00, B4:493.88,
-  C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99,
-  A5:880.00, B5:987.77,
-  G3:196.00, A3:220.00, C3:130.81, F3:174.61,
-};
+let isPlaying = false;
 
-// Melody sequence: [freq, duration_seconds]
-const MELODY = [
-  [NOTE.G4, 0.5],[NOTE.G4, 0.25],[NOTE.G4, 0.25],
-  [NOTE.E4, 0.5],[NOTE.G4, 0.25],[NOTE.G4, 0.25],
-  [NOTE.A4, 1.0],
-  [NOTE.A4, 0.5],[NOTE.A4, 0.25],[NOTE.A4, 0.25],
-  [NOTE.F4, 0.5],[NOTE.A4, 0.25],[NOTE.A4, 0.25],
-  [NOTE.B4, 1.0],
-  [NOTE.B4, 0.5],[NOTE.B4, 0.25],[NOTE.B4, 0.25],
-  [NOTE.G4, 0.5],[NOTE.B4, 0.25],[NOTE.B4, 0.25],
-  [NOTE.C5, 0.75],[NOTE.B4, 0.25],[NOTE.A4, 0.5],[NOTE.G4, 0.5],
-  [NOTE.D5, 1.5],
-  [NOTE.C5, 0.5],[NOTE.B4, 0.5],[NOTE.A4, 0.5],[NOTE.G4, 0.5],
-  [NOTE.A4, 0.5],[NOTE.G4, 0.5],[NOTE.E4, 1.0],
-  [NOTE.G4, 0.5],[NOTE.F4, 0.5],[NOTE.E4, 0.5],[NOTE.D4, 0.5],
-  [NOTE.E4, 1.5],
-];
-
-// Bass line: root chords
-const BASS = [
-  [NOTE.C3, 2],[NOTE.C3, 2],[NOTE.F3, 2],[NOTE.F3, 2],
-  [NOTE.G3, 2],[NOTE.G3, 2],[NOTE.C3, 2],[NOTE.C3, 2],
-  [NOTE.A3, 2],[NOTE.A3, 2],[NOTE.G3, 2],[NOTE.C3, 2],
-];
-
-function createAudioCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioCtx;
-}
-
-function playNote(freq, startTime, duration, type = 'sine', gainVal = 0.18, ctx) {
-  const osc  = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, startTime);
-
-  // Envelope
-  gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(gainVal, startTime + 0.02);
-  gain.gain.setValueAtTime(gainVal, startTime + duration - 0.08);
-  gain.gain.linearRampToValueAtTime(0, startTime + duration);
-
-  // Reverb-like: add slight detune
-  osc.detune.setValueAtTime(Math.random() * 2 - 1, startTime);
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.start(startTime);
-  osc.stop(startTime + duration + 0.01);
-
-  musicNodes.push(osc, gain);
-  return osc;
-}
-
-function scheduleMelody() {
-  if (!isPlaying) return;
-  const ctx    = createAudioCtx();
-  const now    = ctx.currentTime;
-  let   time   = now + 0.1;
-
-  // Play melody
-  MELODY.forEach(([freq, dur]) => {
-    playNote(freq, time, dur * 0.92, 'sine', 0.22, ctx);
-    // Add harmonics
-    playNote(freq * 2, time, dur * 0.92, 'sine', 0.06, ctx);
-    time += dur;
-  });
-
-  // Play bass
-  let bassTime = now + 0.1;
-  BASS.forEach(([freq, dur]) => {
-    playNote(freq, bassTime, dur * 0.85, 'triangle', 0.10, ctx);
-    bassTime += dur;
-  });
-
-  // Loop after total melody duration
-  const totalDur = MELODY.reduce((s, [, d]) => s + d, 0);
-  musicScheduleTimeout = setTimeout(() => {
-    if (isPlaying) {
-      musicNodes = [];
-      scheduleMelody();
+// Fade in / fade out helpers
+function fadeIn(audio, targetVol = 0.55, duration = 1200) {
+  audio.volume = 0;
+  audio.play().catch(() => {});
+  const step  = 30;
+  const ticks = duration / step;
+  const delta = targetVol / ticks;
+  const timer = setInterval(() => {
+    if (audio.volume + delta >= targetVol) {
+      audio.volume = targetVol;
+      clearInterval(timer);
+    } else {
+      audio.volume += delta;
     }
-  }, (totalDur + 0.5) * 1000);
+  }, step);
 }
 
-function stopMusic() {
-  clearTimeout(musicScheduleTimeout);
-  musicNodes.forEach(n => {
-    try { n.stop ? n.stop() : n.disconnect(); } catch(e) {}
-    try { n.disconnect(); } catch(e) {}
-  });
-  musicNodes = [];
+function fadeOut(audio, duration = 800) {
+  const step  = 30;
+  const ticks = duration / step;
+  const delta = audio.volume / ticks;
+  const timer = setInterval(() => {
+    if (audio.volume - delta <= 0) {
+      audio.volume = 0;
+      audio.pause();
+      clearInterval(timer);
+    } else {
+      audio.volume -= delta;
+    }
+  }, step);
 }
 
-// Spawn floating music note on btn click
+// Floating note particles
 const NOTE_EMOJIS = ['🎵','🎶','♪','♫','🎼'];
 function spawnNoteParticle() {
-  const btn  = document.getElementById('musicBtn');
+  const btn = document.getElementById('musicBtn');
   if (!btn) return;
   const rect = btn.getBoundingClientRect();
   for (let i = 0; i < 3; i++) {
@@ -325,40 +249,38 @@ function spawnNoteParticle() {
       const el = document.createElement('span');
       el.className   = 'note-particle';
       el.textContent = NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)];
-      el.style.left  = (rect.left + Math.random() * rect.width)  + 'px';
-      el.style.top   = (rect.top  - 10) + 'px';
+      el.style.left  = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top   = (rect.top - 10) + 'px';
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 2100);
     }, i * 120);
   }
 }
 
-// Music button logic
+// Music button
 const musicBtn  = document.getElementById('musicBtn');
 const musicIcon = document.getElementById('musicIcon');
 
 musicBtn.addEventListener('click', () => {
   if (isPlaying) {
     isPlaying = false;
-    stopMusic();
+    fadeOut(bgAudio);
     musicIcon.textContent = '🎵';
     musicBtn.classList.remove('playing');
   } else {
     isPlaying = true;
-    createAudioCtx().resume();
-    scheduleMelody();
+    fadeIn(bgAudio);
     musicIcon.textContent = '🔊';
     musicBtn.classList.add('playing');
     spawnNoteParticle();
   }
 });
 
-// Auto-play after intro opens (with user gesture already done)
+// Auto-play khi mở thiệp (gesture đã có từ nút intro)
 window.__autoPlayMusic = function() {
   if (!isPlaying) {
     isPlaying = true;
-    createAudioCtx();
-    scheduleMelody();
+    fadeIn(bgAudio);
     musicIcon.textContent = '🔊';
     musicBtn.classList.add('playing');
     spawnNoteParticle();
