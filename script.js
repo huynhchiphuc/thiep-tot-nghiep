@@ -326,8 +326,8 @@ function showToast(message) {
    9. GOOGLE SHEETS & LIVE PUBLIC WISH WALL FEED
    ============================================================ */
 
-// Google Sheet WebApp URL (Dán URL Google Apps Script vào đây khi sẵn sàng)
-const GOOGLE_SHEET_WEBAPP_URL = window.GOOGLE_SHEET_WEBAPP_URL || '';
+// Google Sheet WebApp URL của Huỳnh Chí Phúc
+const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyY72ka4eExa6moVgzmP9xQoZhXfbcSD0Hhm6BlEXlSROyEQHRY34S_i2mgnlKSHtEt/exec';
 
 // Default sample wishes for public wall
 const DEFAULT_WISHES = [
@@ -379,7 +379,7 @@ function addNewWish(name, msg, attendingStatus = 'Tham dự') {
   localStorage.setItem('hcp_wishes_feed', JSON.stringify(wishes));
   renderWishFeed();
 
-  // Async send to Google Sheet WebApp if configured
+  // Async send to Google Sheet WebApp
   sendDataToGoogleSheet({
     name: name,
     attending: attendingStatus,
@@ -392,10 +392,11 @@ function addNewWish(name, msg, attendingStatus = 'Tham dự') {
 function sendDataToGoogleSheet(data) {
   if (!GOOGLE_SHEET_WEBAPP_URL) return;
   try {
+    // Send as JSON text
     fetch(GOOGLE_SHEET_WEBAPP_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(data)
     }).catch(err => console.log('Sheet sync status:', err));
   } catch(e) {}
