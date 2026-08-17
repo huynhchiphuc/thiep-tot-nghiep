@@ -410,13 +410,41 @@ function sendDataToGoogleSheet(data) {
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
+    }).then(() => {
+      // Refresh global sync after sending
+      setTimeout(fetchGlobalData, 1500);
     }).catch(err => console.log('Sheet sync status:', err));
   } catch(e) {}
 }
 
-// Render feed on page init
-document.addEventListener('DOMContentLoaded', renderWishFeed);
+// Function to fetch real-time global heart count and wishes from Google Sheet WebApp
+function fetchGlobalData() {
+  if (!GOOGLE_SHEET_WEBAPP_URL) return;
+  fetch(GOOGLE_SHEET_WEBAPP_URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data && typeof data.hearts === 'number') {
+        currentHearts = data.hearts;
+        if (heartCountEl) heartCountEl.textContent = currentHearts;
+        localStorage.setItem('hcp_hearts_count', currentHearts.toString());
+      }
+      if (data && Array.isArray(data.wishes) && data.wishes.length > 0) {
+        localStorage.setItem('hcp_wishes_feed', JSON.stringify(data.wishes));
+        renderWishFeed();
+      }
+    })
+    .catch(err => {});
+}
+
+// Render feed & sync global data on page init
+document.addEventListener('DOMContentLoaded', () => {
+  renderWishFeed();
+  fetchGlobalData();
+  // Poll global sync every 12 seconds for live updates on all devices
+  setInterval(fetchGlobalData, 12000);
+});
 renderWishFeed();
+fetchGlobalData();
 
 /* ============================================================
    10. HEART WISH WALL / HEART EXPLOSION
