@@ -7,7 +7,7 @@
   <meta name="description" content="Trân trọng kính mời bạn tham dự Lễ Tốt Nghiệp của Huỳnh Chí Phúc tại Đại Học Nam Cần Thơ ngày 22/08/2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600;1,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -41,7 +41,7 @@
     <div class="intro-content">
       <div class="intro-ring">
         <svg viewBox="0 0 200 200" class="ring-svg">
-          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#ringGrad)" stroke-width="2" stroke-dasharray="8 6"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#ringGrad)" stroke-width="2.5" stroke-dasharray="8 6"/>
           <defs>
             <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#f472b6"/>
@@ -54,9 +54,9 @@
           <img src="1000063510.png" alt="Huỳnh Chí Phúc" />
         </div>
       </div>
-      <p class="intro-sub">✦ Bạn nhận được một lời mời đặc biệt ✦</p>
+      <p class="intro-sub">✦ LỜI MỜI ĐẶC BIỆT ✦</p>
       <h1 class="intro-name">Huỳnh Chí Phúc</h1>
-      <p class="intro-desc">Trân trọng kính mời bạn đến chung vui<br/>trong ngày tốt nghiệp của mình</p>
+      <p class="intro-desc">Trân trọng kính mời quý thầy cô, gia đình & bạn bè<br/>đến tham dự Lễ Tốt Nghiệp của mình</p>
       <button class="intro-btn" id="introBtn">
         <span class="btn-text">Mở Thiệp Mời</span>
         <span class="btn-icon">→</span>
@@ -64,56 +64,68 @@
     </div>
   </div>
 
-  <!-- ======= MAIN CARD ======= -->
+  <!-- ======= MAIN PAGE ======= -->
   <main class="main-page hidden" id="mainPage">
 
-    <!-- Hero section -->
+    <!-- Hero Card Showcase -->
     <section class="hero-section">
       <div class="hero-glass">
 
-        <!-- Top label -->
+        <!-- Top Badges -->
         <div class="chip-row">
           <span class="chip chip-purple">🎓 Lễ Tốt Nghiệp</span>
+          <span class="chip chip-gold">✨ Tân Cử Nhân</span>
           <span class="chip chip-orange">2026</span>
         </div>
 
-        <!-- Hero title -->
+        <!-- Main Photo Banner -->
+        <div class="portrait-container">
+          <div class="portrait-wrapper">
+            <div class="portrait-glow"></div>
+            <img src="1000063510.png" alt="Huỳnh Chí Phúc" class="portrait-img" />
+            <div class="portrait-frame-border"></div>
+            <div class="portrait-tag badge-left">🎓 DNC 2026</div>
+            <div class="portrait-tag badge-right">⭐ Huỳnh Chí Phúc</div>
+          </div>
+        </div>
+
+        <!-- Hero Title Block -->
         <div class="hero-title-block">
-          <p class="hero-greeting">Xin trân trọng kính mời</p>
-          <h2 class="hero-name">Huỳnh<br/><em>Chí Phúc</em></h2>
-          <div class="hero-line">
-            <span></span><span class="hero-cap">🎓</span><span></span>
+          <p class="hero-greeting">Trân trọng kính mời</p>
+          <h2 class="hero-name">Huỳnh <em>Chí Phúc</em></h2>
+          <div class="hero-divider">
+            <span class="line"></span>
+            <span class="diamond">🎓</span>
+            <span class="line"></span>
           </div>
           <p class="hero-school">Đại Học Nam Cần Thơ</p>
         </div>
 
-        <!-- Photo strip -->
-        <div class="photo-strip">
-          <div class="photo-halo">
-            <img src="1000063510.png" alt="Huỳnh Chí Phúc" class="hero-photo" />
-            <div class="halo-ring r1"></div>
-            <div class="halo-ring r2"></div>
-          </div>
-          <div class="photo-badges">
-            <div class="p-badge badge-top">🌟 Tốt nghiệp</div>
-            <div class="p-badge badge-bottom">🏫 NCT 2026</div>
-          </div>
+        <!-- Action Bar Quick Buttons -->
+        <div class="hero-quick-actions">
+          <button class="action-chip rsvp-chip" id="quickRsvpBtn">
+            <span>💌</span> Xác Nhận Tham Dự
+          </button>
+          <button class="action-chip share-chip" id="quickShareBtn">
+            <span>📲</span> Chia Sẻ Thiệp
+          </button>
         </div>
+
       </div>
     </section>
 
-    <!-- Info section -->
+    <!-- Key Info Cards -->
     <section class="info-section">
-      <h3 class="section-title">Thông Tin Lễ</h3>
+      <h3 class="section-title">✨ Thông Tin Sự Kiện</h3>
 
       <div class="info-grid">
 
         <div class="info-tile tile-wide" id="tileDate">
           <div class="tile-icon-wrap icon-purple">📅</div>
           <div class="tile-body">
-            <span class="tile-label">Ngày tổ chức</span>
+            <span class="tile-label">Ngày trọng đại</span>
             <span class="tile-value">22 / 08 / 2026</span>
-            <span class="tile-sub">Thứ Bảy</span>
+            <span class="tile-sub">Thứ Bảy · Ngày đẹp chung vui</span>
           </div>
         </div>
 
@@ -121,36 +133,91 @@
           <div class="tile-icon-wrap icon-orange">⏰</div>
           <div class="tile-body">
             <span class="tile-label">Thời gian</span>
-            <span class="tile-value">13:30</span>
-            <span class="tile-sub">đến 15:30</span>
-          </div>
-        </div>
-
-        <div class="info-tile tile-wide" id="tileAddr">
-          <div class="tile-icon-wrap icon-pink">📍</div>
-          <div class="tile-body">
-            <span class="tile-label">Địa điểm</span>
-            <span class="tile-value">Đại Học Nam Cần Thơ</span>
-            <span class="tile-sub">168 Đường Nguyễn Văn Cừ (Nối Dài),<br/>An Bình, Ninh Kiều, Cần Thơ</span>
+            <span class="tile-value">13:30 – 15:30</span>
+            <span class="tile-sub">Buổi chiều vui vẻ</span>
           </div>
         </div>
 
         <div class="info-tile" id="tilePhone">
           <div class="tile-icon-wrap icon-teal">📞</div>
           <div class="tile-body">
-            <span class="tile-label">Liên hệ</span>
+            <span class="tile-label">Điện thoại</span>
             <a href="tel:0378815231" class="tile-value phone-link">0378 815 231</a>
-            <span class="tile-sub">Huỳnh Chí Phúc</span>
+            <span class="tile-sub">Bấm để gọi ngay</span>
+          </div>
+        </div>
+
+        <div class="info-tile tile-wide" id="tileAddr">
+          <div class="tile-icon-wrap icon-pink">📍</div>
+          <div class="tile-body">
+            <span class="tile-label">Địa điểm tổ chức</span>
+            <span class="tile-value">Trường Đại Học Nam Cần Thơ</span>
+            <span class="tile-sub">Số 168 Đường Nguyễn Văn Cừ (Nối Dài), An Bình, Ninh Kiều, Cần Thơ</span>
           </div>
         </div>
 
       </div>
     </section>
 
+    <!-- Event Timeline Program -->
+    <section class="timeline-section">
+      <div class="timeline-glass">
+        <h3 class="section-title text-center">⏳ Lịch Trình Lễ Tốt Nghiệp</h3>
+        
+        <div class="timeline-list">
+
+          <div class="timeline-item">
+            <div class="tl-time">13:30</div>
+            <div class="tl-marker">
+              <span class="tl-dot">📸</span>
+            </div>
+            <div class="tl-content">
+              <h4 class="tl-title">Đón Khách & Chụp Ảnh</h4>
+              <p class="tl-desc">Đón tiếp quý khách, gia đình và bạn bè. Chụp hình kỷ niệm tại sảnh trường.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="tl-time">14:00</div>
+            <div class="tl-marker">
+              <span class="tl-dot">🎓</span>
+            </div>
+            <div class="tl-content">
+              <h4 class="tl-title">Lễ Trao Bằng Tốt Nghiệp</h4>
+              <p class="tl-desc">Nghi thức trao bằng cử nhân chính thức tại hội trường Đại Học Nam Cần Thơ.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="tl-time">15:00</div>
+            <div class="tl-marker">
+              <span class="tl-dot">💐</span>
+            </div>
+            <div class="tl-content">
+              <h4 class="tl-title">Chúc Mừng & Chụp Hình Kỷ Niệm</h4>
+              <p class="tl-desc">Tặng hoa, chụp ảnh lưu niệm cùng gia đình, thầy cô và hội bạn thân.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="tl-time">15:30</div>
+            <div class="tl-marker">
+              <span class="tl-dot">🍰</span>
+            </div>
+            <div class="tl-content">
+              <h4 class="tl-title">Giao Lưu & Trò Chuyện</h4>
+              <p class="tl-desc">Cùng trò chuyện, chụp thêm những khoảnh khắc đẹp và kết thúc buổi lễ.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- Countdown section -->
     <section class="cd-section">
       <div class="cd-glass">
-        <p class="cd-title">⏳ Đếm ngược đến ngày trọng đại</p>
+        <p class="cd-title">✨ Đếm ngược thời gian diễn ra lễ</p>
         <div class="cd-grid">
           <div class="cd-box">
             <span class="cd-num" id="days">00</span>
@@ -175,24 +242,50 @@
       </div>
     </section>
 
-    <!-- Map button -->
-    <section class="map-section">
-      <a
-        href="https://maps.google.com/?q=Đại+Học+Nam+Cần+Thơ,+168+Nguyễn+Văn+Cừ+Nối+Dài,+An+Bình,+Ninh+Kiều,+Cần+Thơ"
-        target="_blank" rel="noopener noreferrer"
-        class="map-btn" id="mapBtn"
-      >
-        <span>🗺️</span> Xem đường đi trên Google Maps
-      </a>
+    <!-- Interactive Heart / Wish Wall -->
+    <section class="wish-section">
+      <div class="wish-glass">
+        <div class="wish-header">
+          <span class="wish-icon">💖</span>
+          <h4 class="wish-title">Gửi Lời Chúc Mừng</h4>
+        </div>
+        <p class="wish-desc">Nhấn nút bên dưới để gửi tim và lời chúc mừng đến Phúc nhé!</p>
+        <div class="wish-controls">
+          <button class="heart-btn" id="sendHeartBtn">
+            <span class="heart-emoji">❤️</span>
+            <span class="heart-text">Gửi Lời Chúc Mừng</span>
+            <span class="heart-count" id="heartCount">128</span>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <!-- Quote -->
+    <!-- Map & Directions -->
+    <section class="map-section">
+      <div class="map-card-wrapper">
+        <a
+          href="https://maps.google.com/?q=Đại+Học+Nam+Cần+Thơ,+168+Nguyễn+Văn+Cừ+Nối+Dài,+An+Bình,+Ninh+Kiều,+Cần+Thơ"
+          target="_blank" rel="noopener noreferrer"
+          class="map-btn" id="mapBtn"
+        >
+          <span class="map-icon">🗺️</span>
+          <div class="map-btn-text">
+            <strong>Xem Đường Đi Trên Google Maps</strong>
+            <small>Đại Học Nam Cần Thơ - 168 Nguyễn Văn Cừ Nối Dài</small>
+          </div>
+          <span class="map-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Quote Card -->
     <section class="quote-section">
       <div class="quote-glass">
         <div class="quote-deco">"</div>
         <p class="quote-text">
           Hành trình vạn dặm bắt đầu từ một bước chân.<br/>
-          Cảm ơn mọi người đã đồng hành cùng tôi.
+          Chân thành cảm ơn gia đình, thầy cô và bạn bè<br/>
+          đã luôn đồng hành và ủng hộ Phúc trong suốt chặng đường qua!
         </p>
         <p class="quote-author">— Huỳnh Chí Phúc</p>
       </div>
@@ -201,13 +294,54 @@
     <!-- Footer -->
     <footer class="site-footer">
       <div class="footer-dots">
-        <span>✦</span><span>🎓</span><span>✦</span>
+        <span>✨</span><span>🎓</span><span>✨</span>
       </div>
-      <p>Sự hiện diện của bạn là niềm vinh dự của tôi</p>
-      <p class="footer-sub">Đại Học Nam Cần Thơ · 2026</p>
+      <p>Sự hiện diện của bạn là niềm vinh dự lớn nhất của Phúc</p>
+      <p class="footer-sub">Đại Học Nam Cần Thơ · Lễ Tốt Nghiệp 2026</p>
     </footer>
 
   </main>
+
+  <!-- Interactive Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- RSVP Modal -->
+  <div class="modal-overlay hidden" id="rsvpModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeRsvpModal">&times;</button>
+      <div class="modal-header">
+        <span class="modal-icon">💌</span>
+        <h3>Xác Nhận Tham Dự</h3>
+        <p>Vui lòng chọn thông tin để Phúc tiện đón tiếp nhé!</p>
+      </div>
+      <form class="rsvp-form" id="rsvpForm">
+        <div class="form-group">
+          <label for="guestName">Tên của bạn:</label>
+          <input type="text" id="guestName" placeholder="Nhập tên của bạn..." required />
+        </div>
+        <div class="form-group">
+          <label>Bạn sẽ tham dự chứ?</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="attending" value="yes" checked />
+              <span>Chắc chắn đến 🎉</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="attending" value="maybe" />
+              <span>Sẽ cố gắng xếp lịch ✨</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="guestMsg">Lời chúc đến Phúc (không bắt buộc):</label>
+          <textarea id="guestMsg" rows="3" placeholder="Gửi lời chúc tốt đẹp..."></textarea>
+        </div>
+        <button type="submit" class="submit-rsvp-btn">
+          <span>Gửi Xác Nhận</span> ✨
+        </button>
+      </form>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

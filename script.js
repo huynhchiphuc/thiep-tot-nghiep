@@ -1,14 +1,14 @@
 /* ============================================================
-   script.js – Vibrant Glassmorphism Invitation Logic
+   script.js – Ultra-Luxury Invitation Logic
    ============================================================ */
 
 /* ============================================================
-   1. MP3 PLAYER – khai báo sớm nhất để dùng ở mọi nơi
+   1. MP3 PLAYER
    ============================================================ */
 
 const bgAudio  = new Audio('nhac_nen.mp3');
 bgAudio.loop   = true;
-bgAudio.volume = 0;          // bắt đầu từ 0, sẽ fade in
+bgAudio.volume = 0;
 
 let isPlaying = false;
 
@@ -44,7 +44,7 @@ function fadeOut(duration = 800) {
 }
 
 /* ============================================================
-   2. CONFETTI
+   2. CONFETTI ENGINE
    ============================================================ */
 
 const canvas = document.getElementById('confettiCanvas');
@@ -60,7 +60,7 @@ window.addEventListener('resize', resizeCanvas);
 const COLORS = [
   '#a855f7','#d8b4fe','#f472b6','#fda4af',
   '#fb923c','#fdba74','#2dd4bf','#ffffff',
-  '#7c3aed','#f9a8d4'
+  '#7c3aed','#f9a8d4','#facc15'
 ];
 
 class ConfettiPiece {
@@ -109,8 +109,8 @@ class ConfettiPiece {
 let confettiList = [];
 let confettiLoop = null;
 
-function burstConfetti() {
-  const burst = Array.from({ length: 180 }, () => new ConfettiPiece(true));
+function burstConfetti(count = 180) {
+  const burst = Array.from({ length: count }, () => new ConfettiPiece(true));
   confettiList.push(...burst);
   if (!confettiLoop) runConfettiLoop();
 }
@@ -133,10 +133,10 @@ function runConfettiLoop() {
    3. FLOATING PARTICLES
    ============================================================ */
 
-const PARTICLE_COLORS = ['#a855f7','#f472b6','#fb923c','#2dd4bf','#d8b4fe'];
+const PARTICLE_COLORS = ['#a855f7','#f472b6','#fb923c','#2dd4bf','#d8b4fe','#facc15'];
 const particleContainer = document.getElementById('floatParticles');
 
-function spawnParticles(count = 20) {
+function spawnParticles(count = 24) {
   for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'fparticle';
@@ -152,11 +152,10 @@ function spawnParticles(count = 20) {
     particleContainer.appendChild(p);
   }
 }
-
-spawnParticles(22);
+spawnParticles(24);
 
 /* ============================================================
-   4. COUNTDOWN
+   4. COUNTDOWN ENGINE
    ============================================================ */
 
 const TARGET = new Date('2026-08-22T13:30:00+07:00');
@@ -200,12 +199,11 @@ function updateCountdown() {
 });
 
 /* ============================================================
-   5. MUSIC BUTTON (nút 🎵 góc dưới phải)
+   5. MUSIC BUTTON
    ============================================================ */
 
 const musicBtn  = document.getElementById('musicBtn');
 const musicIcon = document.getElementById('musicIcon');
-
 const NOTE_EMOJIS = ['🎵','🎶','♪','♫','🎼'];
 
 function spawnNoteParticle() {
@@ -247,7 +245,7 @@ musicBtn.addEventListener('click', () => {
 });
 
 /* ============================================================
-   6. AUTO-PLAY: bật nhạc ngay khi người dùng tương tác đầu tiên
+   6. AUTO-PLAY ON FIRST INTERACTION
    ============================================================ */
 
 function startMusicOnFirstInteraction() {
@@ -257,16 +255,13 @@ function startMusicOnFirstInteraction() {
   spawnNoteParticle();
 }
 
-// Thử autoplay ngay (một số browser cho phép nếu không có âm thanh mute)
 bgAudio.play()
   .then(() => {
-    // Thành công – browser cho phép autoplay
     setMusicPlaying(true);
     bgAudio.volume = 0;
-    fadeIn();                   // fade in mượt
+    fadeIn();
   })
   .catch(() => {
-    // Browser chặn autoplay → đợi click/touch đầu tiên bất kỳ đâu
     const handler = () => {
       startMusicOnFirstInteraction();
       document.removeEventListener('click',      handler);
@@ -287,7 +282,6 @@ const mainPage    = document.getElementById('mainPage');
 function openInvitation() {
   introBtn.disabled = true;
 
-  // Đảm bảo nhạc đang phát khi mở thiệp
   if (!isPlaying) {
     setMusicPlaying(true);
     fadeIn();
@@ -299,7 +293,7 @@ function openInvitation() {
   setTimeout(() => {
     introScreen.style.display = 'none';
     mainPage.classList.remove('hidden');
-    burstConfetti();
+    burstConfetti(220);
     updateCountdown();
     setInterval(updateCountdown, 1000);
     initReveal();
@@ -309,16 +303,111 @@ function openInvitation() {
 introBtn.addEventListener('click', openInvitation);
 
 /* ============================================================
-   8. REVEAL ON SCROLL
+   8. INTERACTIVE TOAST NOTIFICATIONS
+   ============================================================ */
+
+const toastContainer = document.getElementById('toastContainer');
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = message;
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-10px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+/* ============================================================
+   9. HEART WISH WALL / HEART EXPLOSION
+   ============================================================ */
+
+const sendHeartBtn = document.getElementById('sendHeartBtn');
+const heartCountEl = document.getElementById('heartCount');
+let currentHearts = 128;
+
+const HEART_TYPES = ['❤️','💖','💕','✨','🌸','🌟','🎉'];
+
+sendHeartBtn.addEventListener('click', (e) => {
+  currentHearts++;
+  heartCountEl.textContent = currentHearts;
+
+  // Spawn floating hearts
+  const rect = sendHeartBtn.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart-anim';
+      heart.textContent = HEART_TYPES[Math.floor(Math.random() * HEART_TYPES.length)];
+      heart.style.left = (rect.left + Math.random() * rect.width) + 'px';
+      heart.style.top = (rect.top + Math.random() * rect.height) + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1800);
+    }, i * 90);
+  }
+
+  showToast('💖 Cảm ơn bạn đã gửi lời chúc tốt đẹp!');
+});
+
+/* ============================================================
+   10. RSVP MODAL & QUICK ACTIONS
+   ============================================================ */
+
+const rsvpModal      = document.getElementById('rsvpModal');
+const quickRsvpBtn   = document.getElementById('quickRsvpBtn');
+const closeRsvpModal = document.getElementById('closeRsvpModal');
+const rsvpForm       = document.getElementById('rsvpForm');
+const quickShareBtn  = document.getElementById('quickShareBtn');
+
+function openModal() {
+  rsvpModal.classList.remove('hidden');
+}
+
+function closeModal() {
+  rsvpModal.classList.add('hidden');
+}
+
+quickRsvpBtn.addEventListener('click', openModal);
+closeRsvpModal.addEventListener('click', closeModal);
+
+rsvpModal.addEventListener('click', (e) => {
+  if (e.target === rsvpModal) closeModal();
+});
+
+rsvpForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('guestName').value.trim();
+  closeModal();
+  burstConfetti(150);
+  showToast(`🎉 Cảm ơn <strong>${name}</strong> đã xác nhận tham dự!`);
+  rsvpForm.reset();
+});
+
+// QUICK SHARE BUTTON
+quickShareBtn.addEventListener('click', () => {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('📲 Đã sao chép liên kết thiệp! Hãy gửi cho bạn bè nhé.');
+  } else {
+    showToast('📲 Hãy copy đường dẫn trên thanh địa chỉ để chia sẻ nhé!');
+  }
+});
+
+/* ============================================================
+   11. REVEAL ON SCROLL
    ============================================================ */
 
 function initReveal() {
   const targets = document.querySelectorAll(
-    '.hero-section, .info-section, .cd-section, .map-section, .quote-section, .site-footer'
+    '.hero-section, .info-section, .timeline-section, .cd-section, .wish-section, .map-section, .quote-section, .site-footer'
   );
   targets.forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = (i * 100) + 'ms';
+    el.style.transitionDelay = (i * 90) + 'ms';
   });
 
   const obs = new IntersectionObserver(entries => {
