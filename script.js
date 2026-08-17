@@ -327,7 +327,7 @@ function showToast(message) {
    ============================================================ */
 
 // Google Sheet WebApp URL của Huỳnh Chí Phúc
-const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyY72ka4eExa6moVgzmP9xQoZhXfbcSD0Hhm6BlEXlSROyEQHRY34S_i2mgnlKSHtEt/exec';
+const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxCI9RbDNbiOL1XKQbWqQBDWCCwu1GE87RdWvlqvuOSJxC9-R-By5n0V51OlBrtDz0F/exec';
 
 // Default sample wishes for public wall
 const DEFAULT_WISHES = [
