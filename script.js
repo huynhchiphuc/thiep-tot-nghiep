@@ -517,7 +517,12 @@ rsvpForm.addEventListener('submit', (e) => {
   const name = document.getElementById('guestName').value.trim();
   const msg  = document.getElementById('guestMsg').value.trim();
   const attendingRadio = document.querySelector('input[name="attending"]:checked');
-  const attendingVal = attendingRadio ? (attendingRadio.value === 'yes' ? 'Chắc chắn đến 🎉' : 'Sẽ cố gắng xếp lịch ✨') : 'Tham dự';
+  let attendingVal = 'Gửi chúc từ xa 💖';
+  if (attendingRadio) {
+    if (attendingRadio.value === 'yes') attendingVal = 'Chắc chắn đến 🎉';
+    else if (attendingRadio.value === 'maybe') attendingVal = 'Sẽ cố gắng xếp lịch ✨';
+    else attendingVal = 'Gửi chúc từ xa 💖';
+  }
 
   const visibilityRadio = document.querySelector('input[name="visibility"]:checked');
   const isPublic = visibilityRadio ? (visibilityRadio.value === 'public') : true;
@@ -529,7 +534,7 @@ rsvpForm.addEventListener('submit', (e) => {
   burstConfetti(150);
   
   if (isPublic) {
-    showToast(`🎉 Cảm ơn <strong>${escapeHtml(name)}</strong> đã xác nhận & gửi lời chúc công khai!`);
+    showToast(`🎉 Cảm ơn <strong>${escapeHtml(name)}</strong> đã gửi lời chúc mừng!`);
   } else {
     showToast(`🔒 Cảm ơn <strong>${escapeHtml(name)}</strong>! Lời chúc riêng tư đã được gửi đến Phúc.`);
   }

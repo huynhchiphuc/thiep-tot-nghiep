@@ -111,7 +111,7 @@
         <!-- Action Bar Quick Buttons -->
         <div class="hero-quick-actions">
           <button class="action-chip rsvp-chip" id="quickRsvpBtn">
-            <span>💌</span> Xác Nhận Tham Dự
+            <span>💌</span> Gửi Lời Chúc Mừng
           </button>
           <button class="action-chip share-chip" id="quickShareBtn">
             <span>📲</span> Chia Sẻ Thiệp
@@ -318,14 +318,14 @@
   <!-- Interactive Toast Notification -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- RSVP Modal -->
+  <!-- RSVP / Wish Modal -->
   <div class="modal-overlay hidden" id="rsvpModal">
     <div class="modal-card">
       <button class="modal-close" id="closeRsvpModal">&times;</button>
       <div class="modal-header">
         <span class="modal-icon">💌</span>
-        <h3>Xác Nhận Tham Dự</h3>
-        <p>Vui lòng chọn thông tin để Phúc tiện đón tiếp nhé!</p>
+        <h3>Gửi Lời Chúc Mừng</h3>
+        <p>Gửi lời chúc thương yêu & thông báo sự có mặt để Phúc tiện chuẩn bị đón tiếp chu đáo nhé!</p>
       </div>
       <form class="rsvp-form" id="rsvpForm">
         <div class="form-group">
@@ -334,7 +334,7 @@
             autocomplete="off" />
         </div>
         <div class="form-group">
-          <label>Bạn sẽ tham dự chứ?</label>
+          <label>Dự định tham dự của bạn:</label>
           <div class="radio-group">
             <label class="radio-label">
               <input type="radio" name="attending" value="yes" checked />
@@ -344,11 +344,15 @@
               <input type="radio" name="attending" value="maybe" />
               <span>Sẽ cố gắng xếp lịch ✨</span>
             </label>
+            <label class="radio-label">
+              <input type="radio" name="attending" value="remote" />
+              <span>Gửi chúc từ xa 💖</span>
+            </label>
           </div>
         </div>
         <div class="form-group">
-          <label for="guestMsg">Lời chúc đến Phúc (không bắt buộc):</label>
-          <textarea id="guestMsg" rows="3" placeholder="Gửi lời chúc tốt đẹp..." maxlength="300"></textarea>
+          <label for="guestMsg">Lời chúc đến Phúc:</label>
+          <textarea id="guestMsg" rows="3" placeholder="Viết lời chúc ý nghĩa gửi đến Phúc..." maxlength="300"></textarea>
         </div>
         <div class="form-group">
           <label>Chế độ hiển thị lời chúc:</label>
@@ -364,7 +368,7 @@
           </div>
         </div>
         <button type="submit" class="submit-rsvp-btn">
-          <span>Gửi Xác Nhận & Lời Chúc</span> ✨
+          <span>Gửi Lời Chúc Mừng</span> ✨
         </button>
       </form>
     </div>
