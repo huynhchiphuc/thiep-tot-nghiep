@@ -8,39 +8,25 @@
 
 const bgAudio  = new Audio('nhac_nen.mp3');
 bgAudio.loop   = true;
-bgAudio.volume = 0;
+bgAudio.preload = 'auto';
+bgAudio.volume = 0.55; // Set volume trực tiếp (iOS Safari không hỗ trợ thay đổi volume qua JS)
 
 let isPlaying = false;
 
-function fadeIn(targetVol = 0.55, duration = 1200) {
-  bgAudio.volume = 0;
-  bgAudio.play().catch(() => {});
-  const step  = 30;
-  const ticks = duration / step;
-  const delta = targetVol / ticks;
-  const timer = setInterval(() => {
-    if (bgAudio.volume + delta >= targetVol) {
-      bgAudio.volume = targetVol;
-      clearInterval(timer);
-    } else {
-      bgAudio.volume += delta;
-    }
-  }, step);
+function fadeIn(targetVol = 0.55, duration = 1000) {
+  try {
+    bgAudio.volume = targetVol;
+  } catch (e) {}
+  bgAudio.play().then(() => {
+    isPlaying = true;
+    setMusicPlaying(true);
+  }).catch(() => {});
 }
 
-function fadeOut(duration = 800) {
-  const step  = 30;
-  const ticks = duration / step;
-  const delta = (bgAudio.volume || 0.55) / ticks;
-  const timer = setInterval(() => {
-    if (bgAudio.volume - delta <= 0) {
-      bgAudio.volume = 0;
-      bgAudio.pause();
-      clearInterval(timer);
-    } else {
-      bgAudio.volume -= delta;
-    }
-  }, step);
+function fadeOut(duration = 500) {
+  bgAudio.pause();
+  isPlaying = false;
+  setMusicPlaying(false);
 }
 
 /* ============================================================
@@ -250,26 +236,24 @@ musicBtn.addEventListener('click', () => {
 
 function startMusicOnFirstInteraction() {
   if (isPlaying) return;
-  setMusicPlaying(true);
-  fadeIn();
-  spawnNoteParticle();
+  bgAudio.play().then(() => {
+    isPlaying = true;
+    setMusicPlaying(true);
+    spawnNoteParticle();
+  }).catch(() => {});
 }
 
-bgAudio.play()
-  .then(() => {
-    setMusicPlaying(true);
-    bgAudio.volume = 0;
-    fadeIn();
-  })
-  .catch(() => {
-    const handler = () => {
-      startMusicOnFirstInteraction();
-      document.removeEventListener('click',      handler);
-      document.removeEventListener('touchstart', handler);
-    };
-    document.addEventListener('click',      handler, { once: true });
-    document.addEventListener('touchstart', handler, { once: true });
-  });
+// Unlock audio on any touch/click event on mobile
+const unlockAudioHandler = () => {
+  startMusicOnFirstInteraction();
+  document.removeEventListener('click',       unlockAudioHandler);
+  document.removeEventListener('touchstart',  unlockAudioHandler);
+  document.removeEventListener('pointerdown', unlockAudioHandler);
+};
+
+document.addEventListener('click',       unlockAudioHandler, { once: true });
+document.addEventListener('touchstart',  unlockAudioHandler, { once: true });
+document.addEventListener('pointerdown', unlockAudioHandler, { once: true });
 
 /* ============================================================
    7. INTRO → MAIN TRANSITION
@@ -282,10 +266,7 @@ const mainPage    = document.getElementById('mainPage');
 function openInvitation() {
   introBtn.disabled = true;
 
-  if (!isPlaying) {
-    setMusicPlaying(true);
-    fadeIn();
-  }
+  startMusicOnFirstInteraction();
 
   introScreen.style.opacity   = '0';
   introScreen.style.transform = 'scale(0.92)';
@@ -301,6 +282,7 @@ function openInvitation() {
 }
 
 introBtn.addEventListener('click', openInvitation);
+introBtn.addEventListener('touchstart', openInvitation, { passive: true });
 
 /* ============================================================
    8. INTERACTIVE TOAST NOTIFICATIONS
@@ -458,6 +440,14 @@ if (heartCountEl) heartCountEl.textContent = currentHearts;
 const HEART_TYPES = ['❤️','💖','💕','✨','🌸','🌟','🎉'];
 
 sendHeartBtn.addEventListener('click', (e) => {
+  let guestName = localStorage.getItem('hcp_guest_name');
+  if (!guestName) {
+    const input = prompt('Nhập tên của bạn để Phúc biết ai đã thả tim chúc mừng nhé ❤️:');
+    if (input === null) return; // Người dùng bấm Hủy
+    guestName = input.trim() || 'Người bạn giấu tên';
+    localStorage.setItem('hcp_guest_name', guestName);
+  }
+
   currentHearts++;
   heartCountEl.textContent = currentHearts;
   localStorage.setItem('hcp_hearts_count', currentHearts.toString());
@@ -476,12 +466,12 @@ sendHeartBtn.addEventListener('click', (e) => {
     }, i * 90);
   }
 
-  showToast('💖 Cảm ơn bạn đã gửi thả tim!');
+  showToast(`💖 Cảm ơn <strong>${escapeHtml(guestName)}</strong> đã thả tim chúc mừng!`);
 
   // Sync heart click to Google Sheet
   sendDataToGoogleSheet({
-    name: 'Bạn bè thả tim ❤️',
-    attending: 'Thả tim',
+    name: guestName,
+    attending: 'Thả tim ❤️',
     message: `Đã thả tim chúc mừng! (Tổng số tim: ${currentHearts})`,
     timestamp: new Date().toLocaleString('vi-VN')
   });
@@ -498,6 +488,10 @@ const rsvpForm       = document.getElementById('rsvpForm');
 const quickShareBtn  = document.getElementById('quickShareBtn');
 
 function openModal() {
+  const guestNameInput = document.getElementById('guestName');
+  if (guestNameInput && !guestNameInput.value) {
+    guestNameInput.value = localStorage.getItem('hcp_guest_name') || '';
+  }
   rsvpModal.classList.remove('hidden');
 }
 
@@ -516,6 +510,11 @@ rsvpForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const name = document.getElementById('guestName').value.trim();
   const msg  = document.getElementById('guestMsg').value.trim();
+
+  if (name) {
+    localStorage.setItem('hcp_guest_name', name);
+  }
+
   const attendingRadio = document.querySelector('input[name="attending"]:checked');
   let attendingVal = 'Gửi chúc từ xa 💖';
   if (attendingRadio) {
