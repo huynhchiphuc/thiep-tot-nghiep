@@ -254,9 +254,9 @@
       <div class="wish-glass">
         <div class="wish-header">
           <span class="wish-icon">💖</span>
-          <h4 class="wish-title">Gửi Lời Chúc Mừng</h4>
+          <h4 class="wish-title">Gửi Lời Chúc Mừng & Thả Tim</h4>
         </div>
-        <p class="wish-desc">Nhấn nút bên dưới để gửi tim và lời chúc mừng đến Phúc nhé!</p>
+        <p class="wish-desc">Nhấn thả tim hoặc bấm gửi lời chúc mừng để gửi tình cảm đến Phúc nhé!</p>
         <div class="wish-controls">
           <button class="heart-btn" id="sendHeartBtn">
             <span class="heart-emoji">❤️</span>
@@ -265,12 +265,31 @@
           </button>
         </div>
 
-        <!-- Live Wish Feed Container -->
+        <!-- Live Feed Container (Tabs) -->
         <div class="wish-feed-container">
-          <h5 class="feed-subtitle">💬 Lời Chúc Từ Bạn Bè (<span id="wishFeedCount">3</span>)</h5>
-          <div class="wish-feed-list" id="wishFeedList">
-            <!-- Dynamic wish cards will be loaded here -->
+          <div class="feed-tabs">
+            <button class="feed-tab-btn active" id="tabWishesBtn">
+              <span>💬 Lời Chúc Mừng</span> (<span id="wishFeedCount">3</span>)
+            </button>
+            <button class="feed-tab-btn" id="tabHeartsBtn">
+              <span>❤️ Người Thả Tim</span> (<span id="heartFeedCount">5</span>)
+            </button>
           </div>
+
+          <!-- Tab 1: Written Wishes -->
+          <div class="feed-tab-panel active" id="panelWishes">
+            <div class="wish-feed-list" id="wishFeedList">
+              <!-- Dynamic wish cards will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Tab 2: Heart Droppers -->
+          <div class="feed-tab-panel hidden" id="panelHearts">
+            <div class="heart-feed-grid" id="heartFeedList">
+              <!-- Dynamic heart user cards will be loaded here -->
+            </div>
+          </div>
+
         </div>
 
       </div>

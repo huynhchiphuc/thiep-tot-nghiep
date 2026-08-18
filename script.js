@@ -313,9 +313,18 @@ const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxCI9Rb
 
 // Default sample wishes for public wall
 const DEFAULT_WISHES = [
-  { name: 'Hội Bạn Thân 🎓', msg: 'Chúc Tân kỹ sư nhân Huỳnh Chí Phúc luôn gặt hái được nhiều thành công rực rỡ!', time: 'Vừa xong' },
-  { name: 'Anh Chị Đồng Nghiệp ✨', msg: 'Chúc mừng Phúc đã hoàn thành xuất sắc chặng đường Đại Học Nam Cần Thơ nhé!', time: '10 phút trước' },
-  { name: 'Bạn Cùng Lớp DNC 🌟', msg: 'Chúc Phúc luôn giữ ngọn lửa đam mê và tự tin chạm tới mọi mục tiêu!', time: '1 giờ trước' }
+  { name: 'Hội Bạn Thân 🎓', tag: 'Chắc chắn đến 🎉', msg: 'Chúc Tân kỹ sư Huỳnh Chí Phúc luôn gặt hái được nhiều thành công rực rỡ!', time: 'Vừa xong' },
+  { name: 'Anh Chị Đồng Nghiệp ✨', tag: 'Sẽ cố gắng xếp lịch ✨', msg: 'Chúc mừng Phúc đã hoàn thành xuất sắc chặng đường Đại Học Nam Cần Thơ nhé!', time: '10 phút trước' },
+  { name: 'Bạn Cùng Lớp DNC 🌟', tag: 'Gửi chúc từ xa 💖', msg: 'Chúc Phúc luôn giữ ngọn lửa đam mê và tự tin chạm tới mọi mục tiêu!', time: '1 giờ trước' }
+];
+
+// Default sample hearts for public heart wall
+const DEFAULT_HEARTS = [
+  { name: 'Minh Anh', count: 12, time: '5 phút trước' },
+  { name: 'Tuấn Kiệt', count: 8, time: '12 phút trước' },
+  { name: 'Bảo Ngọc', count: 15, time: '30 phút trước' },
+  { name: 'Hoàng Nam', count: 6, time: '1 giờ trước' },
+  { name: 'Thùy Trang', count: 10, time: '2 giờ trước' }
 ];
 
 // Load stored wishes or use default
@@ -327,30 +336,158 @@ function getStoredWishes() {
   return DEFAULT_WISHES;
 }
 
+// Load stored heart droppers or use default
+function getStoredHearts() {
+  const localData = localStorage.getItem('hcp_hearts_feed');
+  if (localData) {
+    try { return JSON.parse(localData); } catch(e) {}
+  }
+  return DEFAULT_HEARTS;
+}
+
 function renderWishFeed() {
   const feedList = document.getElementById('wishFeedList');
   const feedCount = document.getElementById('wishFeedCount');
   if (!feedList) return;
 
-  const wishes = getStoredWishes();
+  const rawWishes = getStoredWishes();
+  // Lọc nghiêm ngặt: Chỉ lấy các LỜI CHÚC VIẾT TAY (Loại bỏ thả tim)
+  const wishes = rawWishes.filter(w => {
+    const tag = (w.tag || w.attending || '');
+    const msg = (w.msg || w.message || '');
+    return !tag.includes('Thả tim') && !msg.includes('Đã thả tim');
+  });
+
   if (feedCount) feedCount.textContent = wishes.length;
 
   feedList.innerHTML = wishes.map(w => `
     <div class="feed-card">
       <div class="feed-card-header">
         <span class="feed-author">✨ ${escapeHtml(w.name)}</span>
-        <span class="feed-time">${escapeHtml(w.time || 'Vừa xong')}</span>
+        <div class="feed-header-right">
+          ${w.tag ? `<span class="feed-tag">${escapeHtml(w.tag)}</span>` : ''}
+          <span class="feed-time">${escapeHtml(w.time || 'Vừa xong')}</span>
+        </div>
       </div>
       <div class="feed-body">${escapeHtml(w.msg)}</div>
     </div>
   `).join('');
 }
 
+function renderHeartsFeed() {
+  const heartList  = document.getElementById('heartFeedList');
+  const heartCount = document.getElementById('heartFeedCount');
+  if (!heartList) return;
+
+  const localHearts = getStoredHearts();
+  
+  // Trích xuất các lượt thả tim từ Google Sheet sync (nếu có)
+  const rawWishes = getStoredWishes();
+  const sheetHearts = rawWishes.filter(w => {
+    const tag = (w.tag || w.attending || '');
+    const msg = (w.msg || w.message || '');
+    return tag.includes('Thả tim') || msg.includes('Đã thả tim');
+  }).map(w => ({ name: w.name, count: 1, time: w.time || 'Vừa xong' }));
+
+  // Hợp nhất danh sách thả tim & cộng dồn số lượng tim của người cùng tên
+  const hearts = [];
+  [...localHearts, ...sheetHearts].forEach(sh => {
+    const sName = (sh.name || '').trim();
+    if (!sName) return;
+    const existing = hearts.find(h => h.name.toLowerCase() === sName.toLowerCase());
+    if (existing) {
+      existing.count = Math.max(existing.count || 1, sh.count || 1);
+    } else {
+      hearts.push({
+        name: sName,
+        count: sh.count || 1,
+        time: sh.time || 'Vừa xong'
+      });
+    }
+  });
+
+  if (heartCount) heartCount.textContent = hearts.length;
+
+  heartList.innerHTML = hearts.map(h => `
+    <div class="heart-user-card">
+      <span class="heart-user-avatar">💖</span>
+      <div class="heart-user-info">
+        <div class="heart-user-header">
+          <strong class="heart-user-name">${escapeHtml(h.name)}</strong>
+          <span class="heart-user-cnt">(${h.count || 1} ❤️)</span>
+        </div>
+        <small class="heart-user-time">${escapeHtml(h.time || 'Vừa xong')}</small>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Render both feeds on start
+renderWishFeed();
+renderHeartsFeed();
+
+// Tab switcher logic
+const tabWishesBtn = document.getElementById('tabWishesBtn');
+const tabHeartsBtn = document.getElementById('tabHeartsBtn');
+const panelWishes  = document.getElementById('panelWishes');
+const panelHearts  = document.getElementById('panelHearts');
+
+if (tabWishesBtn && tabHeartsBtn) {
+  tabWishesBtn.addEventListener('click', () => {
+    tabWishesBtn.classList.add('active');
+    tabHeartsBtn.classList.remove('active');
+    panelWishes.classList.remove('hidden');
+    panelWishes.classList.add('active');
+    panelHearts.classList.add('hidden');
+    panelHearts.classList.remove('active');
+  });
+
+  tabHeartsBtn.addEventListener('click', () => {
+    tabHeartsBtn.classList.add('active');
+    tabWishesBtn.classList.remove('active');
+    panelHearts.classList.remove('hidden');
+    panelHearts.classList.add('active');
+    panelWishes.classList.add('hidden');
+    panelWishes.classList.remove('active');
+  });
+}
+
 function escapeHtml(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function addNewWish(name, msg, attendingStatus = 'Tham dự', isPublic = true) {
+function addNewHeartUser(name) {
+  const cleanName = (name || '').trim().slice(0, 60) || 'Người bạn giấu tên';
+  const hearts = getStoredHearts();
+  
+  // Tự động gộp lượt thả tim nếu trùng tên
+  const existingIdx = hearts.findIndex(h => h.name.trim().toLowerCase() === cleanName.toLowerCase());
+  if (existingIdx !== -1) {
+    hearts[existingIdx].count = (hearts[existingIdx].count || 1) + 1;
+    hearts[existingIdx].time = 'Vừa xong';
+    const updated = hearts.splice(existingIdx, 1)[0];
+    hearts.unshift(updated);
+  } else {
+    hearts.unshift({
+      name: cleanName,
+      count: 1,
+      time: 'Vừa xong'
+    });
+  }
+
+  localStorage.setItem('hcp_hearts_feed', JSON.stringify(hearts));
+  renderHeartsFeed();
+
+  // Send heart reaction to Google Sheet
+  sendDataToGoogleSheet({
+    name: cleanName,
+    attending: 'Thả tim ❤️',
+    message: `Đã thả tim chúc mừng! (Tổng số tim: ${currentHearts})`,
+    timestamp: new Date().toLocaleString('vi-VN')
+  });
+}
+
+function addNewWish(name, msg, attendingStatus = 'Gửi chúc từ xa 💖', isPublic = true) {
   // Sanitize & truncate inputs
   const cleanName = (name || '').trim().slice(0, 60);
   const cleanMsg  = (msg || '').trim().slice(0, 300);
@@ -360,6 +497,7 @@ function addNewWish(name, msg, attendingStatus = 'Tham dự', isPublic = true) {
     const wishes = getStoredWishes();
     const newWish = {
       name: cleanName || 'Người bạn giấu tên',
+      tag: attendingStatus,
       msg: cleanMsg || 'Gửi lời chúc mừng thành công đến Huỳnh Chí Phúc! 🎓✨',
       time: 'Vừa xong'
     };
@@ -413,6 +551,7 @@ function fetchGlobalData() {
       if (data && Array.isArray(data.wishes) && data.wishes.length > 0) {
         localStorage.setItem('hcp_wishes_feed', JSON.stringify(data.wishes));
         renderWishFeed();
+        renderHeartsFeed();
       }
     })
     .catch(err => {});
@@ -421,11 +560,13 @@ function fetchGlobalData() {
 // Render feed & sync global data on page init
 document.addEventListener('DOMContentLoaded', () => {
   renderWishFeed();
+  renderHeartsFeed();
   fetchGlobalData();
   // Poll global sync every 12 seconds for live updates on all devices
   setInterval(fetchGlobalData, 12000);
 });
 renderWishFeed();
+renderHeartsFeed();
 fetchGlobalData();
 
 /* ============================================================
@@ -468,13 +609,8 @@ sendHeartBtn.addEventListener('click', (e) => {
 
   showToast(`💖 Cảm ơn <strong>${escapeHtml(guestName)}</strong> đã thả tim chúc mừng!`);
 
-  // Sync heart click to Google Sheet
-  sendDataToGoogleSheet({
-    name: guestName,
-    attending: 'Thả tim ❤️',
-    message: `Đã thả tim chúc mừng! (Tổng số tim: ${currentHearts})`,
-    timestamp: new Date().toLocaleString('vi-VN')
-  });
+  // Add to separate Heart Feed list & sync to Google Sheet
+  addNewHeartUser(guestName);
 });
 
 /* ============================================================
@@ -483,6 +619,7 @@ sendHeartBtn.addEventListener('click', (e) => {
 
 const rsvpModal      = document.getElementById('rsvpModal');
 const quickRsvpBtn   = document.getElementById('quickRsvpBtn');
+const writeWishBtn   = document.getElementById('writeWishBtn');
 const closeRsvpModal = document.getElementById('closeRsvpModal');
 const rsvpForm       = document.getElementById('rsvpForm');
 const quickShareBtn  = document.getElementById('quickShareBtn');
@@ -500,6 +637,7 @@ function closeModal() {
 }
 
 quickRsvpBtn.addEventListener('click', openModal);
+if (writeWishBtn) writeWishBtn.addEventListener('click', openModal);
 closeRsvpModal.addEventListener('click', closeModal);
 
 rsvpModal.addEventListener('click', (e) => {
